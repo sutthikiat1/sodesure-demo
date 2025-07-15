@@ -1,40 +1,15 @@
 import { RotateCcw, MoreHorizontal, Search } from "lucide-react";
-import { useRef } from "react";
 import { useAppContext } from "../../../AppContext";
 
 function CameraScreen() {
   const {
     setCurrentScreen,
     selectedImage,
-    setSelectedImage,
-    stream,
-    setStream,
+    capturePhoto,
+    stopCamera,
+    videoRef,
+    canvasRef,
   } = useAppContext();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
-      const context = canvas.getContext("2d");
-
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      if (context) {
-        context.drawImage(video, 0, 0);
-        const imageData = canvas.toDataURL("image/jpeg");
-        setSelectedImage(imageData);
-
-        // Stop camera
-        if (stream && setStream) {
-          stream.getTracks().forEach((track) => track.stop());
-          setStream(null);
-        }
-      }
-    }
-  };
 
   const MeatImage = ({ className = "w-48 h-32" }: { className?: string }) => (
     <div
@@ -55,10 +30,15 @@ function CameraScreen() {
     </div>
   );
 
+  const handleCloseCamera = () => {
+    stopCamera();
+    setCurrentScreen("scan-method");
+  };
+
   return (
     <div className="relative w-screen h-screen bg-gray-900">
       {/* Top Controls */}
-      <div className="absolute top-0 left-0 right-0 bg-black bg-opacity-50 p-4 flex justify-between items-center text-white text-sm">
+      <div className="absolute top-0 left-0 right-0 bg-black bg-opacity-50 p-4 flex justify-between items-center text-white text-sm z-10">
         <span>1/8</span>
         <span>HDR</span>
         <div className="flex items-center">
@@ -67,21 +47,26 @@ function CameraScreen() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="h-full flex items-center justify-center pt-16 pb-32">
-        <MeatImage className="w-64 h-40" />
-      </div>
-
+      {/* Video Stream */}
       <video
         ref={videoRef}
         autoPlay
         playsInline
-        className="absolute inset-0 w-full h-full object-cover -z-10 opacity-30"
+        className="absolute inset-0 w-full h-full object-cover"
       />
+
+      {/* Canvas for capturing */}
       <canvas ref={canvasRef} className="hidden" />
 
+      {/* Overlay with meat image preview */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="bg-black bg-opacity-20 rounded-lg p-4">
+          <MeatImage className="w-64 h-40" />
+        </div>
+      </div>
+
       {/* Bottom Controls */}
-      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-6">
+      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-6 z-10">
         <div className="flex justify-center items-center space-x-4 mb-6 text-white text-sm">
           <span className="text-gray-300">Short video</span>
           <span className="text-gray-300">Video</span>
@@ -97,7 +82,7 @@ function CameraScreen() {
 
           <button
             onClick={capturePhoto}
-            className="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center bg-white"
+            className="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center bg-white hover:bg-gray-100 transition-colors"
           >
             <div className="w-12 h-12 rounded-full bg-white border-2 border-gray-300"></div>
           </button>
@@ -108,15 +93,10 @@ function CameraScreen() {
         </div>
       </div>
 
+      {/* Close Button */}
       <button
-        onClick={() => {
-          if (stream && setStream) {
-            stream.getTracks().forEach((track) => track.stop());
-            setStream(null);
-          }
-          setCurrentScreen("scan-method");
-        }}
-        className="absolute top-6 left-6 text-white text-2xl"
+        onClick={handleCloseCamera}
+        className="absolute top-6 left-6 text-white text-2xl z-10 hover:text-gray-300 transition-colors"
       >
         ✕
       </button>
