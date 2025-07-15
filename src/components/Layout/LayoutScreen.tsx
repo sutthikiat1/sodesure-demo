@@ -65,7 +65,7 @@ function LayoutScreen({
           {children}
         </div>
         {screen !== "result" && (
-          <div className="h-full flex-1 max-h-[200px] flex items-end">
+          <div className="h-full flex-1 max-h-[200px] flex items-end cursor-pointer">
             <div className="flex-1 flex items-end pb-6">
               <button
                 onClick={() => setCurrentScreen(screen)}

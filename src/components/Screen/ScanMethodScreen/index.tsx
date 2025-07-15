@@ -3,11 +3,7 @@ import { useAppContext } from "../../../AppContext";
 import LayoutScreen from "../../Layout/LayoutScreen";
 
 function ScanMethodScreen() {
-  const { startCamera, fileInputRef, handleFileUpload } = useAppContext();
-
-  const handleCameraPermission = async () => {
-    await startCamera();
-  };
+  const { fileInputRef, handleFileUpload, setCurrentScreen } = useAppContext();
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -34,14 +30,14 @@ function ScanMethodScreen() {
 
         <div className="space-y-6">
           <button
-            onClick={handleCameraPermission}
-            className="bg-primary text-white px-8 py-3 rounded-lg font-medium w-full"
+            onClick={handleFileSelect}
+            className="bg-primary text-white px-8 py-3 rounded-lg font-medium w-full cursor-pointer"
           >
             อนุญาต
           </button>
 
           <button
-            onClick={handleFileSelect}
+            onClick={() => setCurrentScreen("steps")}
             className="text-gray-600 text-base"
           >
             ภายหลัง

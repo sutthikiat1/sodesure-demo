@@ -50,7 +50,7 @@ function ResultScreen() {
 
           <div className="mb-6">
             <div className="text-lg font-bold text-gray-800 mb-4">
-              ผลการแสดง : ยืด ความสด
+              ผลการแสดง : สดมากกกกก!!!!
             </div>
           </div>
 
