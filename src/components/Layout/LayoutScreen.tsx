@@ -56,7 +56,6 @@ function LayoutScreen({
       </div>
     );
   };
-
   return (
     <BoxLayoutScreen>
       <Navbar />
@@ -64,7 +63,7 @@ function LayoutScreen({
         <div className="flex flex-col max-h-[80%] h-full flex-1">
           {children}
         </div>
-        {screen !== "result" && (
+        {currentScreen !== "result" && currentScreen !== "scan-method" && (
           <div className="h-full flex-1 max-h-[200px] flex items-end cursor-pointer">
             <div className="flex-1 flex items-end pb-6">
               <button

@@ -46,7 +46,7 @@ function ResultScreen() {
         <p className="text-sm text-gray-500 mb-8">สแกนล่าสุด: 16:30 น.</p>
 
         <div className="text-center mb-8">
-          <MeatImage className="w-48 h-32 mb-8" />
+          <MeatImage className="aspect-square mb-8 " />
 
           <div className="mb-6">
             <div className="text-lg font-bold text-gray-800 mb-4">

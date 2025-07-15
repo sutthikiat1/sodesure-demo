@@ -1,5 +1,6 @@
 import { Camera, CheckCircle } from "lucide-react";
 import LayoutScreen from "../../Layout/LayoutScreen";
+import BRAIN from "../../../assets/brain.png";
 
 function StepsScreen() {
   return (
@@ -14,24 +15,25 @@ function StepsScreen() {
             <div className="bg-blue-primary rounded-lg p-3 mr-4 flex-shrink-0">
               <Camera className="w-6 h-6 text-white" />
             </div>
-            <div className="text-gray-800 text-base">
+            <div className="text-gray-800 text-2xl">
               เปิดกล้องหรือเลือกภาพถ่าย
             </div>
           </div>
 
           <div className="flex items-center">
             <div className="bg-blue-primary rounded-lg p-3 mr-4 flex-shrink-0">
-              <div className="w-6 h-6 text-white font-bold text-sm flex items-center justify-center">
+              {/* <div className="w-6 h-6 text-white font-bold text-sm flex items-center justify-center">
                 <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
                   <circle cx="7" cy="7" r="2" />
                   <circle cx="17" cy="17" r="2" />
                   <circle cx="12" cy="12" r="1" />
                   <path d="M7 17h10M17 7H7" />
                 </svg>
-              </div>
+              </div> */}
+              <img src={BRAIN} className="w-6 h-6" />
             </div>
-            <div className="text-gray-800 text-base">
-              ระบบ AI วิเคราะห์ที่ ด้วยตนเอง
+            <div className="text-gray-800 text-2xl">
+              ระบบ AI วิเคราะห์สี ลักษณะเนื้อ และความสด
             </div>
           </div>
 
@@ -39,7 +41,7 @@ function StepsScreen() {
             <div className="bg-blue-primary rounded-lg p-3 mr-4 flex-shrink-0">
               <CheckCircle className="w-6 h-6 text-white" />
             </div>
-            <div className="text-gray-800 text-base">แสดงผลวาระสดหรือไม่สด</div>
+            <div className="text-gray-800 text-2xl">แสดงผลว่าสดหรือไม่สด</div>
           </div>
         </div>
       </div>
