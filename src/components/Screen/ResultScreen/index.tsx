@@ -40,10 +40,20 @@ function ResultScreen() {
     }
   };
 
+  const getCurrentTime = () => {
+    return new Date().toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  };
+
   return (
     <LayoutScreen screen="result">
       <div className="px-6 py-6">
-        <p className="text-sm text-gray-500 mb-8">สแกนล่าสุด: 16:30 น.</p>
+        <p className="text-sm text-gray-500 mb-8">
+          สแกนล่าสุด: {getCurrentTime()} น.
+        </p>
 
         <div className="text-center mb-8">
           <MeatImage className="aspect-square mb-8 " />

@@ -24,7 +24,11 @@ function LayoutScreen({
     | "analyzing"
     | "result";
 }) {
-  const { currentScreen, setCurrentScreen } = useAppContext();
+  const { currentScreen, setCurrentScreen, fileInputRef } = useAppContext();
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click();
+  };
 
   const StepIndicator = () => {
     const steps = [
@@ -63,15 +67,37 @@ function LayoutScreen({
         <div className="flex flex-col max-h-[80%] h-full flex-1">
           {children}
         </div>
-        {currentScreen !== "result" && currentScreen !== "scan-method" && (
+        {currentScreen !== "result" && (
           <div className="h-full flex-1 max-h-[200px] flex items-end cursor-pointer">
             <div className="flex-1 flex items-end pb-6">
-              <button
-                onClick={() => setCurrentScreen(screen)}
-                className="bg-primary text-white px-8 py-3 rounded-lg font-medium w-full"
-              >
-                Next
-              </button>
+              {currentScreen !== "scan-method" ? (
+                <>
+                  <button
+                    onClick={() => setCurrentScreen(screen)}
+                    className="bg-primary text-white px-8 py-3 rounded-lg font-medium w-full"
+                  >
+                    Next
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-6 flex items-center justify-center flex-col m-auto w-full">
+                    <button
+                      onClick={handleFileSelect}
+                      className="bg-primary text-white px-8 py-3 rounded-lg font-medium w-full cursor-pointer"
+                    >
+                      อนุญาต
+                    </button>
+
+                    <button
+                      onClick={() => setCurrentScreen("steps")}
+                      className="text-gray-600 text-base"
+                    >
+                      ภายหลัง
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

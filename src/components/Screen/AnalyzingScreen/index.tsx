@@ -6,16 +6,12 @@ function AnalyzingScreen() {
   const { selectedImage } = useAppContext();
 
   // Mock meat image component
-  const MeatImage = ({ className = "w-48 h-32" }: { className?: string }) => (
+  const MeatImage = () => (
     <div
-      className={`${className} bg-gray-200 rounded-lg mx-auto overflow-hidden relative`}
+      className={` bg-gray-200 aspect-square rounded-lg mx-auto overflow-hidden relative`}
     >
       {selectedImage ? (
-        <img
-          src={selectedImage}
-          alt="Meat sample"
-          className="w-full h-full object-cover"
-        />
+        <img src={selectedImage} alt="Meat sample" className=" aspect-square" />
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-red-300 via-red-400 to-red-500 flex items-center justify-center">
           <div className="w-3/4 h-3/4 bg-gradient-to-br from-red-400 via-red-500 to-red-600 rounded-lg shadow-inner"></div>

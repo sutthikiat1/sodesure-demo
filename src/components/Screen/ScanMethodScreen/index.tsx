@@ -3,16 +3,12 @@ import { useAppContext } from "../../../AppContext";
 import LayoutScreen from "../../Layout/LayoutScreen";
 
 function ScanMethodScreen() {
-  const { fileInputRef, handleFileUpload, setCurrentScreen } = useAppContext();
-
-  const handleFileSelect = () => {
-    fileInputRef.current?.click();
-  };
+  const { fileInputRef, handleFileUpload } = useAppContext();
 
   return (
     <LayoutScreen screen="scan-method">
       <div className="text-center flex-1 flex flex-col justify-center">
-        <h1 className="text-xl font-bold text-primary mb-8">
+        <h1 className="text-4xl font-bold text-primary mb-8">
           ให้สิทธิการใช้งานกล้อง
         </h1>
 
@@ -22,26 +18,10 @@ function ScanMethodScreen() {
           ระบบต้องเข้าถึงกล้องของคุณ
         </div>
 
-        <div className="mb-16">
+        <div className="">
           <div className="bg-blue-600 rounded-2xl p-8 mb-8 inline-block">
             <Camera className="w-16 h-16 text-white mx-auto" />
           </div>
-        </div>
-
-        <div className="space-y-6">
-          <button
-            onClick={handleFileSelect}
-            className="bg-primary text-white px-8 py-3 rounded-lg font-medium w-full cursor-pointer"
-          >
-            อนุญาต
-          </button>
-
-          <button
-            onClick={() => setCurrentScreen("steps")}
-            className="text-gray-600 text-base"
-          >
-            ภายหลัง
-          </button>
         </div>
 
         <input
