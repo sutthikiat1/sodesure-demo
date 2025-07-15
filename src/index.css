@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  /* Your theme extensions go here */
+  --color-primary: rgba(47 122 89);
+  --color-blue-primary: rgba(18 78 159);
+}
+
+* {
+  font-family: "IBM Plex Sans Thai", sans-serif;
+}
