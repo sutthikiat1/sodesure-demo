@@ -13,12 +13,14 @@ function ResultScreen() {
   } = useAppContext();
 
   const MeatImage = () => (
-    <div className={` bg-gray-200 rounded-lg mx-auto overflow-hidden relative`}>
+    <div
+      className={` bg-gray-200 aspect-square rounded-lg mx-auto overflow-hidden relative`}
+    >
       {selectedImage ? (
         <img
           src={selectedImage}
           alt="Meat sample"
-          className="w-full h-full object-cover"
+          className=" aspect-square object-cover max-h-[300px]"
         />
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-red-300 via-red-400 to-red-500 flex items-center justify-center">
@@ -49,8 +51,6 @@ function ResultScreen() {
 
   const confidence = ((scanResult?.confidence as number) * 100).toFixed(1);
 
-  console.log("Scan Result:", scanResult);
-
   return (
     <LayoutScreen screen="result">
       <div className="flex flex-1 flex-col">
@@ -79,8 +79,8 @@ function ResultScreen() {
             <div
               className={`w-full relative h-[44px] rounded-[24px]  ${
                 scanResult?.predicted_class === "fresh"
-                  ? `bg-green-50 border-green-200`
-                  : ` border-none`
+                  ? `border-green-200 bg-green-50`
+                  : ` border-red-200/50 bg-red-50`
               } border-2 `}
             >
               <div

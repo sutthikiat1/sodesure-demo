@@ -4,8 +4,8 @@ import { useAppContext } from "../../AppContext";
 import AXONS from "../../assets/axons.svg";
 
 const Navbar = () => (
-  <div className="p-4 text-end flex items-center justify-end">
-    <img src={AXONS} alt="Axons Logo" className="w-[60px] h-[60px]" />
+  <div className="p-4 text-end flex items-center justify-center">
+    <img src={AXONS} alt="Axons Logo" className="w-[48px] h-[48px]" />
   </div>
 );
 
@@ -120,7 +120,6 @@ const BoxLayoutScreen = styled.section`
 `;
 
 const BoxWrapper = styled.div`
-  margin-top: 24px;
   box-shadow: 8px 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 24px;
   display: flex;
