@@ -20,7 +20,7 @@ function ResultScreen() {
         <img
           src={selectedImage}
           alt="Meat sample"
-          className=" aspect-square object-cover max-h-[300px]"
+          className=" aspect-square object-cover max-h-[250px]"
         />
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-red-300 via-red-400 to-red-500 flex items-center justify-center">

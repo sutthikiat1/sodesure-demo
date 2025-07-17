@@ -11,7 +11,7 @@ const MeatFreshnessScanner: React.FC = () => {
   const { currentScreen } = useAppContext();
 
   return (
-    <div className="  w-screen h-screen overflow-hidden">
+    <div className="min-w-screen min-h-screen overflow-y-auto">
       {currentScreen === "welcome" && <WelcomeScreen />}
       {currentScreen === "steps" && <StepsScreen />}
       {currentScreen === "scan-method" && <ScanMethodScreen />}
