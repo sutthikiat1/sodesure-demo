@@ -8,7 +8,7 @@ function ScanMethodScreen() {
   return (
     <LayoutScreen screen="scan-method">
       <div className="text-center flex-1 flex flex-col justify-center">
-        <h1 className="text-5xl text-shadow-md  font-bold text-primary mb-8">
+        <h1 className="text-4xl text-shadow-md  font-bold text-primary mb-8">
           ให้สิทธิการใช้งานกล้อง
         </h1>
 

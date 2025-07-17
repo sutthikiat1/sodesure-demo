@@ -73,7 +73,7 @@ function LayoutScreen({
                   <>
                     <button
                       onClick={() => setCurrentScreen(screen)}
-                      className="bg-primary text-white px-8 py-3 rounded-[24px] text-2xl font-medium w-full"
+                      className="bg-primary text-white px-8 py-2 rounded-[24px] text-2xl font-medium w-full"
                     >
                       ต่อไป
                     </button>
@@ -83,7 +83,7 @@ function LayoutScreen({
                     <div className="space-y-6 flex items-center justify-center flex-col m-auto w-full">
                       <button
                         onClick={handleFileSelect}
-                        className="bg-primary text-white px-8 py-3 rounded-[24px] text-2xl font-medium w-full cursor-pointer"
+                        className="bg-primary text-white px-8 py-2 rounded-[24px] text-2xl font-medium w-full cursor-pointer"
                       >
                         อนุญาต
                       </button>

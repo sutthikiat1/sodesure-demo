@@ -6,7 +6,7 @@ function StepsScreen() {
   return (
     <LayoutScreen screen={"scan-method"}>
       <div className="px-6 py-8 flex-1 flex flex-col">
-        <h1 className="text-5xl text-shadow-md  font-bold text-primary mb-12 text-center">
+        <h1 className="text-4xl text-shadow-md  font-bold text-primary mb-12 text-center">
           เพียง 3 ขั้นตอน
         </h1>
 

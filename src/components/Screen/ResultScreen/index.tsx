@@ -57,7 +57,7 @@ function ResultScreen() {
         <p className="text-sm text-end text-gray-500 mb-8">
           สแกนล่าสุด: {getCurrentTime()} น.
         </p>
-        <h1 className="text-5xl text-shadow-md text-center font-bold text-primary mb-8">
+        <h1 className="text-4xl text-shadow-md text-center font-bold text-primary mb-8">
           ผลการวิเคราะห์
         </h1>
 
@@ -100,7 +100,7 @@ function ResultScreen() {
           <div className="">
             <button
               onClick={resetApp}
-              className="bg-primary min-h-[66px] text-white px-6 py-3 rounded-[24px] font-medium w-full flex items-center justify-center text-2xl"
+              className="bg-primary min-h-[50px] text-white px-6 py-2 rounded-[24px] font-medium w-full flex items-center justify-center text-2xl"
             >
               <Camera className="w-[32px] h-[32px] mr-2" />
               สแกนใหม่อีกครั้ง
