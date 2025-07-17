@@ -26,14 +26,16 @@ function AnalyzingScreen() {
   );
   return (
     <LayoutScreen screen="analyzing">
-      <div className="px-6 py-8 text-center">
-        <h1 className="text-2xl font-bold text-gray-700 mb-8">Analyzing ...</h1>
+      <div className=" text-center">
+        <h1 className="text-4xl font-bold  text-shadow-md   text-primary mb-8">
+          กำลังวิเคราะห์...
+        </h1>
 
         <div className="mb-8">
           <MeatImage />
         </div>
 
-        <div className="mb-8">
+        <div className="">
           <div className="w-16 h-16 mx-auto mb-6">
             {/* Hourglass Icon */}
             <svg viewBox="0 0 64 64" className="w-full h-full">

@@ -12,10 +12,8 @@ function ResultScreen() {
     scanResult,
   } = useAppContext();
 
-  const MeatImage = ({ className = "w-48 h-32" }: { className?: string }) => (
-    <div
-      className={`${className} bg-gray-200 rounded-lg mx-auto overflow-hidden relative`}
-    >
+  const MeatImage = () => (
+    <div className={` bg-gray-200 rounded-lg mx-auto overflow-hidden relative`}>
       {selectedImage ? (
         <img
           src={selectedImage}
@@ -51,38 +49,60 @@ function ResultScreen() {
 
   const confidence = ((scanResult?.confidence as number) * 100).toFixed(1);
 
+  console.log("Scan Result:", scanResult);
+
   return (
     <LayoutScreen screen="result">
-      <div className="px-6 py-6">
-        <p className="text-sm text-gray-500 mb-8">
+      <div className="flex flex-1 flex-col">
+        <p className="text-sm text-end text-gray-500 mb-8">
           สแกนล่าสุด: {getCurrentTime()} น.
         </p>
+        <h1 className="text-5xl text-shadow-md text-center font-bold text-primary mb-8">
+          ผลการวิเคราะห์
+        </h1>
 
-        <div className="text-center mb-8">
-          <MeatImage className="aspect-square mb-8 " />
-
-          <div className="mb-6">
-            <div className=" text-primary text-3xl mb-4">
-              ผลการแสดง :{" "}
-              {scanResult?.quality === "fresh" ? "มีความสด" : "ไม่สด"}
+        <div className="text-center flex flex-col flex-1 gap-[24px] justify-center h-full ">
+          <MeatImage />
+          <div className="flex flex-col items-center flex-1 gap-2">
+            <div className="flex gap-2  text-center items-center">
+              <span className=" text-3xl">ผลการแสดง : </span>
+              <span
+                className={`text-gray-500 text-3xl font-semibold ${
+                  scanResult?.predicted_class === "fresh"
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {scanResult?.predicted_class === "fresh" ? "มีความสด" : "ไม่สด"}
+              </span>
             </div>
-            <div className="w-full relative h-[44px] rounded-[24px] bg-green-50 border-2 border-green-100">
+            <div
+              className={`w-full relative h-[44px] rounded-[24px]  ${
+                scanResult?.predicted_class === "fresh"
+                  ? `bg-green-50 border-green-200`
+                  : ` border-none`
+              } border-2 `}
+            >
               <div
-                className="h-full bg-primary rounded-[24px]"
+                className={`h-full ${
+                  scanResult?.predicted_class === "fresh"
+                    ? `bg-green-700`
+                    : `bg-red-700/50`
+                } rounded-[24px]`}
                 style={{ width: `${confidence}%` }}
               ></div>
-              <div className="absolute text-1xl text-green-200 left-[50%] top-[50%] transform -translate-x-1/2 -translate-y-1/2">
+              <div className="absolute text-1xl text-white left-[50%] top-[50%] transform -translate-x-1/2 -translate-y-1/2">
                 {confidence}%
               </div>
             </div>
           </div>
 
-          <div className="space-y-3 mt-[80px]">
+          <div className="">
             <button
               onClick={resetApp}
-              className="bg-primary min-h-[66px] text-white px-6 py-3 rounded-lg font-medium w-full flex items-center justify-center text-2xl"
+              className="bg-primary min-h-[66px] text-white px-6 py-3 rounded-[24px] font-medium w-full flex items-center justify-center text-2xl"
             >
-              <Camera className="w-5 h-5 mr-2" />
+              <Camera className="w-[32px] h-[32px] mr-2" />
               สแกนใหม่อีกครั้ง
             </button>
           </div>

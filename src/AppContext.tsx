@@ -7,13 +7,6 @@ import React, {
 } from "react";
 import { servicePredict, type IResponsePredict } from "./services/demo";
 
-// Types
-export interface ScanResult {
-  quality: string;
-  freshness: number;
-  confidence: number;
-}
-
 export type Screen =
   | "welcome"
   | "steps"
@@ -32,8 +25,8 @@ interface AppContextType {
   setStream: (stream: MediaStream | null) => void;
   isAnalyzing: boolean;
   setIsAnalyzing: (isAnalyzing: boolean) => void;
-  scanResult: ScanResult | null;
-  setScanResult: (result: ScanResult | null) => void;
+  scanResult: IResponsePredict | null;
+  setScanResult: (result: IResponsePredict | null) => void;
   videoRef: React.RefObject<HTMLVideoElement | null>;
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
@@ -56,7 +49,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [scanResult, setScanResult] = useState<ScanResult | null>(null);
+  const [scanResult, setScanResult] = useState<IResponsePredict | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -113,14 +106,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     setTimeout(() => {
       if (data.predicted_class) {
         // Simulate API call
-
-        const mockResult: ScanResult = {
-          quality: data.predicted_class,
-          freshness: data.confidence,
-          confidence: data.confidence,
-        };
-
-        setScanResult(mockResult);
+        setScanResult(data);
         setIsAnalyzing(false);
         setCurrentScreen("result");
       }
