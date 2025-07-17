@@ -5,7 +5,7 @@ import AXONS from "../../assets/axons.svg";
 
 const Navbar = () => (
   <div className="p-4 text-end flex items-center justify-center">
-    <img src={AXONS} alt="Axons Logo" className="w-[48px] h-[48px]" />
+    <img src={AXONS} alt="Axons Logo" className="w-[56px] h-[56px]" />
   </div>
 );
 
