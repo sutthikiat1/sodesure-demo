@@ -4,7 +4,6 @@ import { useAppContext } from "./AppContext.tsx";
 import WelcomeScreen from "./components/Screen/WelcomeScreen/index.tsx";
 import StepsScreen from "./components/Screen/StepsScreen/index.tsx";
 import ScanMethodScreen from "./components/Screen/ScanMethodScreen/index.tsx";
-import CameraScreen from "./components/Screen/CameraScreen/index.tsx";
 import AnalyzingScreen from "./components/Screen/AnalyzingScreen/index.tsx";
 import ResultScreen from "./components/Screen/ResultScreen/index.tsx";
 
@@ -16,7 +15,6 @@ const MeatFreshnessScanner: React.FC = () => {
       {currentScreen === "welcome" && <WelcomeScreen />}
       {currentScreen === "steps" && <StepsScreen />}
       {currentScreen === "scan-method" && <ScanMethodScreen />}
-      {currentScreen === "camera" && <CameraScreen />}
       {currentScreen === "analyzing" && <AnalyzingScreen />}
       {currentScreen === "result" && <ResultScreen />}
     </div>

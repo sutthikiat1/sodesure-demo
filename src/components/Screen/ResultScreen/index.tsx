@@ -9,6 +9,7 @@ function ResultScreen() {
     setSelectedImage,
     setStream,
     stream,
+    scanResult,
   } = useAppContext();
 
   const MeatImage = ({ className = "w-48 h-32" }: { className?: string }) => (
@@ -48,6 +49,8 @@ function ResultScreen() {
     });
   };
 
+  const confidence = ((scanResult?.confidence as number) * 100).toFixed(1);
+
   return (
     <LayoutScreen screen="result">
       <div className="px-6 py-6">
@@ -59,15 +62,25 @@ function ResultScreen() {
           <MeatImage className="aspect-square mb-8 " />
 
           <div className="mb-6">
-            <div className="text-lg font-bold text-gray-800 mb-4">
-              ผลการแสดง : สดมากกกกก!!!!
+            <div className=" text-primary text-3xl mb-4">
+              ผลการแสดง :{" "}
+              {scanResult?.quality === "fresh" ? "มีความสด" : "ไม่สด"}
+            </div>
+            <div className="w-full relative h-[44px] rounded-[24px] bg-green-50 border-2 border-green-100">
+              <div
+                className="h-full bg-primary rounded-[24px]"
+                style={{ width: `${confidence}%` }}
+              ></div>
+              <div className="absolute text-1xl text-green-200 left-[50%] top-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                {confidence}%
+              </div>
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 mt-[80px]">
             <button
               onClick={resetApp}
-              className="bg-primary text-white px-6 py-3 rounded-lg font-medium w-full flex items-center justify-center"
+              className="bg-primary min-h-[66px] text-white px-6 py-3 rounded-lg font-medium w-full flex items-center justify-center text-2xl"
             >
               <Camera className="w-5 h-5 mr-2" />
               สแกนใหม่อีกครั้ง

@@ -1,12 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { Menu } from "lucide-react";
 import { useAppContext } from "../../AppContext";
 import AXONS from "../../assets/axons.svg";
 
 const Navbar = () => (
-  <div className="bg-primary text-white px-4 py-3 flex justify-between items-center">
-    <Menu className="w-5 h-5" />
+  <div className="bg-primary text-white px-4 py-3 flex justify-end items-center">
     <img src={AXONS} alt="Axons Logo" className="w-8 h-8" />
   </div>
 );

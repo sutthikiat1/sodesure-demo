@@ -5,10 +5,11 @@ import React, {
   type ReactNode,
   useRef,
 } from "react";
+import { servicePredict, type IResponsePredict } from "./services/demo";
 
 // Types
 export interface ScanResult {
-  quality: "excellent" | "good" | "poor";
+  quality: string;
   freshness: number;
   confidence: number;
 }
@@ -38,10 +39,9 @@ interface AppContextType {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
   // Camera functions
   startCamera: () => Promise<void>;
-  capturePhoto: () => void;
   stopCamera: () => void;
   handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  analyzeMeat: () => Promise<void>;
+  analyzeMeat: (data: IResponsePredict) => Promise<void>;
   resetApp: () => void;
 }
 
@@ -82,30 +82,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // Capture Photo Function
-  const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
-      const context = canvas.getContext("2d");
-
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      if (context) {
-        context.drawImage(video, 0, 0);
-        const imageData = canvas.toDataURL("image/jpeg");
-        setSelectedImage(imageData);
-
-        // Stop camera
-        stopCamera();
-
-        // Start analysis
-        analyzeMeat();
-      }
-    }
-  };
-
   // Stop Camera Function
   const stopCamera = () => {
     if (stream) {
@@ -119,31 +95,36 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
+        setIsAnalyzing(true);
+        setCurrentScreen("analyzing");
         setSelectedImage(e.target?.result as string);
-        analyzeMeat();
+        const formData = new FormData();
+        formData.append(`file`, file);
+        const response = await servicePredict(formData);
+        analyzeMeat(response);
       };
       reader.readAsDataURL(file);
     }
   };
 
   // Mock Analysis Function
-  const analyzeMeat = async () => {
-    setIsAnalyzing(true);
-    setCurrentScreen("analyzing");
+  const analyzeMeat = async (data: IResponsePredict) => {
+    setTimeout(() => {
+      if (data.predicted_class) {
+        // Simulate API call
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+        const mockResult: ScanResult = {
+          quality: data.predicted_class,
+          freshness: data.confidence,
+          confidence: data.confidence,
+        };
 
-    const mockResult: ScanResult = {
-      quality: Math.random() > 0.7 ? "excellent" : "good",
-      freshness: Math.floor(Math.random() * 30) + 70,
-      confidence: Math.floor(Math.random() * 10) + 90,
-    };
-
-    setScanResult(mockResult);
-    setIsAnalyzing(false);
-    setCurrentScreen("result");
+        setScanResult(mockResult);
+        setIsAnalyzing(false);
+        setCurrentScreen("result");
+      }
+    }, 2000);
   };
 
   // Reset App Function
@@ -170,7 +151,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     fileInputRef,
     canvasRef,
     startCamera,
-    capturePhoto,
     stopCamera,
     handleFileUpload,
     analyzeMeat,

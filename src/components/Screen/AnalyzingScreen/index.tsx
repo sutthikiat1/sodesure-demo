@@ -11,7 +11,11 @@ function AnalyzingScreen() {
       className={` bg-gray-200 aspect-square rounded-lg mx-auto overflow-hidden relative`}
     >
       {selectedImage ? (
-        <img src={selectedImage} alt="Meat sample" className=" aspect-square" />
+        <img
+          src={selectedImage}
+          alt="Meat sample"
+          className=" aspect-square object-cover"
+        />
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-red-300 via-red-400 to-red-500 flex items-center justify-center">
           <div className="w-3/4 h-3/4 bg-gradient-to-br from-red-400 via-red-500 to-red-600 rounded-lg shadow-inner"></div>
