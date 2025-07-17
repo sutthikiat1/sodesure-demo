@@ -65,9 +65,9 @@ function ResultScreen() {
           <MeatImage />
           <div className="flex flex-col items-center flex-1 gap-2">
             <div className="flex gap-2  text-center items-center">
-              <span className=" text-3xl">ผลการแสดง : </span>
+              <span className="text-2xl">ผลการแสดง : </span>
               <span
-                className={`text-gray-500 text-3xl font-semibold ${
+                className={`text-gray-500 text-2xl font-semibold ${
                   scanResult?.predicted_class === "fresh"
                     ? "text-green-600"
                     : "text-red-600"

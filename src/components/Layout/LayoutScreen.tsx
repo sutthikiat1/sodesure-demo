@@ -40,7 +40,7 @@ function LayoutScreen({
     const currentStepIndex = steps.indexOf(currentScreen);
 
     return (
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
+      <div className="mt-[24px] flex items-center justify-center">
         <div className="flex space-x-2">
           {steps.map((step, index) => (
             <div
