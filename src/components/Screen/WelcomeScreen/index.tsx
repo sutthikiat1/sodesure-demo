@@ -3,7 +3,7 @@ import LOGO from "../../../assets/logo.png"; // Adjust the path as necessary
 
 function WelcomeScreen() {
   return (
-    <LayoutScreen screen={"steps"}>
+    <LayoutScreen screen={"features"}>
       <div className="text-center flex-1 gap-[24px] flex items-center justify-between flex-col">
         <h1 className="text-4xl text-shadow-md font-bold  text-primary  text-center">
           สดชัวร์ AI

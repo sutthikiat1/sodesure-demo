@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useAppContext } from "../../AppContext";
 import AXONS from "../../assets/axons.svg";
+import NavigationBar from "./NavigationBar";
 
 const Navbar = () => (
   <div className="p-4 text-end flex items-center justify-center">
@@ -12,15 +13,18 @@ const Navbar = () => (
 function LayoutScreen({
   children,
   screen,
+  showNavBar = false,
 }: {
   children: React.ReactNode;
   screen:
     | "welcome"
+    | "features"
     | "steps"
     | "scan-method"
     | "camera"
     | "analyzing"
     | "result";
+  showNavBar?: boolean;
 }) {
   const { currentScreen, setCurrentScreen, fileInputRef } = useAppContext();
 
@@ -31,6 +35,7 @@ function LayoutScreen({
   const StepIndicator = () => {
     const steps = [
       "welcome",
+      "features",
       "steps",
       "scan-method",
       "camera",
@@ -49,8 +54,8 @@ function LayoutScreen({
                 index === currentStepIndex
                   ? "bg-black w-8"
                   : index < currentStepIndex
-                  ? "bg-gray-400"
-                  : "bg-gray-300"
+                    ? "bg-gray-400"
+                    : "bg-gray-300"
               }`}
             />
           ))}
@@ -102,6 +107,9 @@ function LayoutScreen({
           )}
         </div>
       </BoxWrapper>
+
+      {showNavBar && <NavigationBar />}
+
       <div className="flex-1 max-h-[50px]">
         <StepIndicator />
       </div>

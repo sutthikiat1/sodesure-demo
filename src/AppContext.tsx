@@ -9,11 +9,13 @@ import { servicePredict, type IResponsePredict } from "./services/demo";
 
 export type Screen =
   | "welcome"
+  | "features"
   | "steps"
   | "scan-method"
   | "camera"
   | "analyzing"
-  | "result";
+  | "result"
+  | "map";
 
 // Context Types
 interface AppContextType {
