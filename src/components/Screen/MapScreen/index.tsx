@@ -13,8 +13,7 @@ import LotusLogo from "../../../assets/lotuslogo.png";
 import CPLogo from "../../../assets/cplogo.png";
 
 const mapContainerStyle = {
-  maxWidth: "500px",
-  height: "500px",
+  height: "520px",
   width: "100%",
 };
 
@@ -174,6 +173,27 @@ function MapScreen() {
     }
   };
 
+  const findLogoLocation = (place: Place) => {
+    const name = place?.name?.toLocaleLowerCase();
+    if (name?.includes("makro")) {
+      return MakroLogo;
+    } else if (name?.includes("lotus")) {
+      return LotusLogo;
+    } else if (name?.includes("cp")) {
+      return CPLogo;
+    } else {
+      return (
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(`
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="#059669" stroke="white" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        `)
+      );
+    }
+  };
+
   if (loadError) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50">
@@ -205,7 +225,7 @@ function MapScreen() {
   }
 
   return (
-    <div className="min-h-screen max-w-[500px] mx-auto bg-white flex flex-col">
+    <div className="min-h-screen mx-auto bg-white flex flex-col">
       {/* Header */}
       <div className="bg-primary text-white p-4 shadow-md flex items-center">
         <button
@@ -251,28 +271,6 @@ function MapScreen() {
 
           {/* Store Markers */}
           {places.map((place) => {
-            console.log(place, "place");
-            const findLogoLocation = () => {
-              const name = place?.name?.toLocaleLowerCase();
-              if (name?.includes("makro")) {
-                return MakroLogo;
-              } else if (name?.includes("lotus")) {
-                return LotusLogo;
-              } else if (name?.includes("cp")) {
-                return CPLogo;
-              } else {
-                return (
-                  "data:image/svg+xml;charset=UTF-8," +
-                  encodeURIComponent(`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="#059669" stroke="white" stroke-width="2">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                      <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                  `)
-                );
-              }
-            };
-
             return (
               <OverlayView
                 key={place.id}
@@ -283,11 +281,11 @@ function MapScreen() {
                   onClick={() => setSelectedPlace(place)}
                   className="cursor-pointer transform -translate-x-1/2 -translate-y-full flex justify-center flex-col w-fit"
                 >
-                  {findLogoLocation() ? (
+                  {findLogoLocation(place) ? (
                     // รูปภาพแบบวงกลมไม่มีพื้นหลัง
                     <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-lg bg-transparent">
                       <img
-                        src={findLogoLocation()}
+                        src={findLogoLocation(place)}
                         alt={place.name}
                         className="w-full h-full object-cover"
                       />
@@ -312,9 +310,17 @@ function MapScreen() {
               onCloseClick={() => setSelectedPlace(null)}
             >
               <div className="p-2">
-                <h3 className="font-semibold text-gray-800 mb-1">
-                  {selectedPlace.name}
-                </h3>
+                <div className="flex items-center gap-3 mb-3">
+                  <img
+                    src={findLogoLocation(selectedPlace)}
+                    width={40}
+                    height={40}
+                    className="rounded-full border-primary border-2 object-cover"
+                  />
+                  <h3 className="font-semibold text-gray-800 mb-1">
+                    {selectedPlace.name}
+                  </h3>
+                </div>
                 <p className="text-sm text-gray-600 mb-2">
                   {selectedPlace.address}
                 </p>
