@@ -54,8 +54,8 @@ function LayoutScreen({
                 index === currentStepIndex
                   ? "bg-black w-8"
                   : index < currentStepIndex
-                    ? "bg-gray-400"
-                    : "bg-gray-300"
+                  ? "bg-gray-400"
+                  : "bg-gray-300"
               }`}
             />
           ))}
@@ -119,7 +119,7 @@ function LayoutScreen({
 
 const BoxLayoutScreen = styled.section`
   min-height: 100vh;
-  max-width: 500px;
+  // max-width: 500px;
   margin: 0 auto;
   background: #f0f0f0;
   display: flex;
