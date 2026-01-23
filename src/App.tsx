@@ -8,6 +8,7 @@ import ScanMethodScreen from "./components/Screen/ScanMethodScreen/index.tsx";
 import AnalyzingScreen from "./components/Screen/AnalyzingScreen/index.tsx";
 import ResultScreen from "./components/Screen/ResultScreen/index.tsx";
 import MapScreen from "./components/Screen/MapScreen/index.tsx";
+import ScanHistoryScreen from "./components/Screen/ScanHistory/index.tsx";
 
 const MeatFreshnessScanner: React.FC = () => {
   const { currentScreen } = useAppContext();
@@ -21,6 +22,7 @@ const MeatFreshnessScanner: React.FC = () => {
       {currentScreen === "analyzing" && <AnalyzingScreen />}
       {currentScreen === "result" && <ResultScreen />}
       {currentScreen === "map" && <MapScreen />}
+      {currentScreen === "history" && <ScanHistoryScreen />}
     </div>
   );
 };

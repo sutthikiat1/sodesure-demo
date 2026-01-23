@@ -9,6 +9,10 @@ function FeaturesScreen() {
     setCurrentScreen("map");
   };
 
+  const handleHistoryClick = () => {
+    setCurrentScreen("history");
+  };
+
   const features = [
     {
       icon: <ShieldCheck className="w-8 h-8 text-primary" />,
@@ -22,7 +26,7 @@ function FeaturesScreen() {
       title: "ดูประวัติการสแกน",
       description: "เชื่อมประวัติการสแกนอย่างคงถาวง่าย",
       bgColor: "bg-green-50",
-      onClick: undefined,
+      onClick: handleHistoryClick,
     },
     {
       icon: <Store className="w-8 h-8 text-primary" />,
