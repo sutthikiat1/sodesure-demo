@@ -9,8 +9,9 @@ import { ArrowLeft, MapPin, Plus, Minus } from "lucide-react";
 import { useAppContext } from "../../../AppContext";
 
 const mapContainerStyle = {
+  maxWidth: "500px",
+  height: "500px",
   width: "100%",
-  height: "100%",
 };
 
 const defaultCenter = {
@@ -37,7 +38,6 @@ function MapScreen() {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const [isSearching, setIsSearching] = useState(false);
-
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_APIKEY || "",
     libraries: libraries,
@@ -57,7 +57,7 @@ function MapScreen() {
         (error) => {
           console.error("Error getting location:", error);
           setUserLocation(defaultCenter);
-        },
+        }
       );
     } else {
       setUserLocation(defaultCenter);
@@ -96,7 +96,7 @@ function MapScreen() {
               if (place.place_id && place.geometry?.location && place.name) {
                 // Check if place already exists
                 const exists = allFoundPlaces.some(
-                  (p) => p.id === place.place_id,
+                  (p) => p.id === place.place_id
                 );
 
                 if (!exists) {
@@ -110,9 +110,9 @@ function MapScreen() {
                     google.maps.geometry.spherical.computeDistanceBetween(
                       new google.maps.LatLng(
                         userLocation.lat,
-                        userLocation.lng,
+                        userLocation.lng
                       ),
-                      new google.maps.LatLng(placePos.lat, placePos.lng),
+                      new google.maps.LatLng(placePos.lat, placePos.lng)
                     );
 
                   allFoundPlaces.push({
@@ -132,7 +132,7 @@ function MapScreen() {
           if (completedSearches === searchTerms.length) {
             // Sort by distance
             const sortedPlaces = allFoundPlaces.sort(
-              (a, b) => (a.distance || 0) - (b.distance || 0),
+              (a, b) => (a.distance || 0) - (b.distance || 0)
             );
             setPlaces(sortedPlaces);
             setIsSearching(false);
