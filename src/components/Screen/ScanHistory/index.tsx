@@ -91,15 +91,15 @@ function ScanHistoryScreen() {
             <div className="mb-4 text-gray-600 text-sm">
               ทั้งหมด {scanHistory.length} รายการ
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 h-32!">
               {scanHistory.map((item: HistoryItem) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow"
+                  className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow "
                 >
                   <div className="flex">
                     {/* Image */}
-                    <div className="w-32 h-32 flex-shrink-0">
+                    <div className="w-32 h-36 flex-shrink-0">
                       <img
                         src={item.imageUrl}
                         alt="Scanned meat"
@@ -113,7 +113,7 @@ function ScanHistoryScreen() {
                     </div>
 
                     {/* Info */}
-                    <div className="flex-1 p-4 flex flex-col justify-between">
+                    <div className="flex-1 p-4 flex flex-col justify-between h-36 ">
                       <div>
                         <div className="flex items-center gap-2 mb-2">
                           <span

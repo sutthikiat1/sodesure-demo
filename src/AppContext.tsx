@@ -145,7 +145,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
       timestamp: new Date(),
     };
 
-    console.log("➕ Adding new scan to history:", newItem);
+    console.log("Adding new scan to history:", newItem);
 
     setScanHistory((prev) => {
       const updated = [newItem, ...prev];
@@ -240,24 +240,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     return new Promise((resolve) => {
       console.log("⏱️ Starting analysis timeout...");
       console.log(
-        "🖼️ Image URL received:",
+        "Image URL received:",
         imageUrl ? `length: ${imageUrl.length}` : "MISSING!"
       );
 
       setTimeout(() => {
-        console.log("⏱️ Analysis timeout completed");
-        console.log("📊 Response data:", data);
+        console.log("Analysis timeout completed");
+        console.log("Response data:", data);
 
         if (data.predicted_class) {
-          console.log("✅ Valid prediction received");
+          console.log("Valid prediction received");
           setScanResult(data);
           setIsAnalyzing(false);
           setCurrentScreen("result");
 
           // Add to history IMMEDIATELY with the imageUrl parameter
           if (imageUrl) {
-            console.log("📸 Image URL exists, adding to history...");
-            console.log("🖼️ Image URL length:", imageUrl.length);
+            console.log("Image URL exists, adding to history...");
+            console.log("Image URL length:", imageUrl.length);
 
             const historyItem = {
               imageUrl: imageUrl,
@@ -268,13 +268,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
               confidence: data.confidence,
             };
 
-            console.log("📝 History item to save:", historyItem);
+            console.log("History item to save:", historyItem);
             addScanHistory(historyItem);
 
             // Force verify immediately
             setTimeout(() => {
               const saved = localStorage.getItem(STORAGE_KEY);
-              console.log("🔍 Immediate verification - localStorage:", saved);
+              console.log("Immediate verification - localStorage:", saved);
             }, 100);
           } else {
             console.error("❌ No imageUrl provided to analyzeMeat!");
