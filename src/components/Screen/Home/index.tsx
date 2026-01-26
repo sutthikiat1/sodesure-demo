@@ -8,6 +8,7 @@ import {
   Package,
   Camera,
   ScanLine,
+  History,
 } from "lucide-react";
 import type { HistoryItem } from "../../../AppContext";
 import { useNavigate } from "react-router-dom";
@@ -127,87 +128,103 @@ const index = () => {
   };
 
   const RecentHistory = () => {
-    if (scanHistory?.length === 0) {
-      return null;
-    }
-
-    const recentItems = scanHistory.slice(0, 3);
-
     return (
-      <div className="px-4">
+      <div className="px-4 mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-gray-800 border-l-4 border-primary pl-3">
-            Recent History
+            ประวัติการสแกนล่าสุด
           </h2>
-          <button
-            onClick={() => setCurrentScreen("history")}
-            className="text-blue-500 text-sm font-semibold hover:underline"
-          >
-            See All
-          </button>
+          {scanHistory?.length > 0 && (
+            <button
+              onClick={() => setCurrentScreen("history")}
+              className="text-blue-500 text-sm font-semibold hover:underline"
+            >
+              ดูทั้งหมด
+            </button>
+          )}
         </div>
 
-        <div className="space-y-3">
-          {recentItems.map((item: HistoryItem, index: number) => {
-            const confidence = Math.round(item.confidence * 100);
-            const bgColor =
-              confidence >= 90
-                ? "bg-green-100 text-green-700"
-                : confidence >= 80
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-red-100 text-red-700";
+        {scanHistory?.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <History className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="font-semibold text-gray-800 mb-2">
+              ยังไม่มีประวัติการสแกน
+            </h3>
+            <p className="text-sm text-gray-500 mb-4">
+              เริ่มต้นสแกนเนื้อของคุณเพื่อดูประวัติที่นี่
+            </p>
+            <button
+              onClick={() => navigate("/scan")}
+              className="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-6 rounded-full transition-colors text-sm"
+            >
+              เริ่มสแกนเลย
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {scanHistory.slice(0, 3).map((item: HistoryItem, index: number) => {
+              const confidence = Math.round(item.confidence * 100);
+              const bgColor =
+                confidence >= 90
+                  ? "bg-green-100 text-green-700"
+                  : confidence >= 80
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-red-100 text-red-700";
 
-            return (
-              <div
-                key={item.id}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 flex items-center gap-3 hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => setCurrentScreen("history")}
-              >
-                {/* Image */}
-                <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
-                  <img
-                    src={item.imageUrl}
-                    alt="Meat scan"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "https://via.placeholder.com/64?text=No+Image";
-                    }}
-                  />
-                </div>
+              return (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 flex items-center gap-3 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => setCurrentScreen("history")}
+                >
+                  {/* Image */}
+                  <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
+                    <img
+                      src={item.imageUrl}
+                      alt="Meat scan"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src =
+                          "https://via.placeholder.com/64?text=No+Image";
+                      }}
+                    />
+                  </div>
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-800 text-base mb-1">
-                    {getMeatType(index)}
-                  </h3>
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <svg
-                      className="w-3 h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-800 text-base mb-1">
+                      {getMeatType(index)}
+                    </h3>
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <svg
+                        className="w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                      </svg>
+                      <span>{formatDateTime(item.timestamp)}</span>
+                    </div>
+                  </div>
+
+                  {/* Confidence Badge */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-semibold ${bgColor}`}
                     >
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 6v6l4 2" />
-                    </svg>
-                    <span>{formatDateTime(item.timestamp)}</span>
+                      {confidence}%
+                    </span>
+                    <ChevronRight className="w-5 h-5 text-gray-400" />
                   </div>
                 </div>
-
-                {/* Confidence Badge */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${bgColor}`}
-                  >
-                    {confidence}%
-                  </span>
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   };
@@ -252,7 +269,7 @@ const index = () => {
     return (
       <div className="px-4 mb-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4 border-l-4 border-blue-500 pl-3">
-          Freshness Tips
+          คำแนะนำการเก็บรักษา
         </h2>
 
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
