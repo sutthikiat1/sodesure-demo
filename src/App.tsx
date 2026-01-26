@@ -1,30 +1,36 @@
 import React from "react";
-import { useAppContext } from "./AppContext.tsx";
+// import { useAppContext } from "./AppContext.tsx";
+// import WelcomeScreen from "./components/Screen/WelcomeScreen/index.tsx";
+// import FeaturesScreen from "./components/Screen/FeaturesScreen/index.tsx";
+// import StepsScreen from "./components/Screen/StepsScreen/index.tsx";
+// import ScanMethodScreen from "./components/Screen/ScanMethodScreen/index.tsx";
+// import AnalyzingScreen from "./components/Screen/AnalyzingScreen/index.tsx";
+// import ResultScreen from "./components/Screen/ResultScreen/index.tsx";
+// import MapScreen from "./components/Screen/MapScreen/index.tsx";
+// import ScanHistoryScreen from "./components/Screen/ScanHistory/index.tsx";
+// import BottomBar from "./components/Layout/BottomBar.tsx";
+// import Navbar from "./components/Layout/Navbar.tsx";
+import Home from "./components/Screen/Home/index.tsx";
+import { Route, Routes } from "react-router-dom";
+import Layout from "./components/Layout/Layout.tsx";
 
-import WelcomeScreen from "./components/Screen/WelcomeScreen/index.tsx";
-import FeaturesScreen from "./components/Screen/FeaturesScreen/index.tsx";
-import StepsScreen from "./components/Screen/StepsScreen/index.tsx";
-import ScanMethodScreen from "./components/Screen/ScanMethodScreen/index.tsx";
-import AnalyzingScreen from "./components/Screen/AnalyzingScreen/index.tsx";
-import ResultScreen from "./components/Screen/ResultScreen/index.tsx";
-import MapScreen from "./components/Screen/MapScreen/index.tsx";
-import ScanHistoryScreen from "./components/Screen/ScanHistory/index.tsx";
-
-const MeatFreshnessScanner: React.FC = () => {
-  const { currentScreen } = useAppContext();
-
+const App: React.FC = () => {
   return (
-    <div className="min-w-screen min-h-screen overflow-y-auto">
-      {currentScreen === "welcome" && <WelcomeScreen />}
-      {currentScreen === "features" && <FeaturesScreen />}
-      {currentScreen === "steps" && <StepsScreen />}
-      {currentScreen === "scan-method" && <ScanMethodScreen />}
-      {currentScreen === "analyzing" && <AnalyzingScreen />}
-      {currentScreen === "result" && <ResultScreen />}
-      {currentScreen === "map" && <MapScreen />}
-      {currentScreen === "history" && <ScanHistoryScreen />}
-    </div>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Layout>
+            <Home />
+          </Layout>
+        }
+      />
+      <Route path="/guild" element={<Layout>guild</Layout>} />
+      <Route path="/scan" element={<Layout>scan</Layout>} />
+      <Route path="/history" element={<Layout>history</Layout>} />
+      <Route path="/nearby" element={<Layout>nearby</Layout>} />
+    </Routes>
   );
 };
 
-export default MeatFreshnessScanner;
+export default App;
