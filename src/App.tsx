@@ -13,6 +13,7 @@ import React from "react";
 import Home from "./components/Screen/Home/index.tsx";
 import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout/Layout.tsx";
+import MapScreen from "./components/Screen/MapScreen/index.tsx";
 
 const App: React.FC = () => {
   return (
@@ -28,7 +29,14 @@ const App: React.FC = () => {
       <Route path="/guild" element={<Layout>guild</Layout>} />
       <Route path="/scan" element={<Layout>scan</Layout>} />
       <Route path="/history" element={<Layout>history</Layout>} />
-      <Route path="/nearby" element={<Layout>nearby</Layout>} />
+      <Route
+        path="/nearby"
+        element={
+          <Layout>
+            <MapScreen />
+          </Layout>
+        }
+      />
     </Routes>
   );
 };

@@ -41,6 +41,7 @@ function MapScreen() {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_APIKEY || "",
     libraries: libraries,
@@ -60,7 +61,7 @@ function MapScreen() {
         (error) => {
           console.error("Error getting location:", error);
           setUserLocation(defaultCenter);
-        }
+        },
       );
     } else {
       setUserLocation(defaultCenter);
@@ -69,9 +70,9 @@ function MapScreen() {
 
   // Search for nearby stores
   useEffect(() => {
-    if (mapRef.current && userLocation && isLoaded && !isSearching) {
+    if (isMapLoaded && userLocation && isLoaded && !isSearching) {
       setIsSearching(true);
-      const service = new google.maps.places.PlacesService(mapRef.current);
+      const service = new google.maps.places.PlacesService(mapRef.current!);
       const searchTerms = [
         "CP Freshmart",
         "CP Fresh Mart",
@@ -99,7 +100,7 @@ function MapScreen() {
               if (place.place_id && place.geometry?.location && place.name) {
                 // Check if place already exists
                 const exists = allFoundPlaces.some(
-                  (p) => p.id === place.place_id
+                  (p) => p.id === place.place_id,
                 );
 
                 if (!exists) {
@@ -113,9 +114,9 @@ function MapScreen() {
                     google.maps.geometry.spherical.computeDistanceBetween(
                       new google.maps.LatLng(
                         userLocation.lat,
-                        userLocation.lng
+                        userLocation.lng,
                       ),
-                      new google.maps.LatLng(placePos.lat, placePos.lng)
+                      new google.maps.LatLng(placePos.lat, placePos.lng),
                     );
 
                   if (
@@ -141,7 +142,7 @@ function MapScreen() {
           if (completedSearches === searchTerms.length) {
             // Sort by distance
             const sortedPlaces = allFoundPlaces.sort(
-              (a, b) => (a.distance || 0) - (b.distance || 0)
+              (a, b) => (a.distance || 0) - (b.distance || 0),
             );
             setPlaces(sortedPlaces);
             setIsSearching(false);
@@ -149,10 +150,11 @@ function MapScreen() {
         });
       });
     }
-  }, [mapRef.current, userLocation, isLoaded]);
+  }, [isMapLoaded, userLocation, isLoaded, isSearching]);
 
   const onMapLoad = useCallback((map: google.maps.Map) => {
     mapRef.current = map;
+    setIsMapLoaded(true);
   }, []);
 
   const handleZoomIn = () => {
@@ -192,6 +194,22 @@ function MapScreen() {
         `)
       );
     }
+  };
+
+  const isCertifiedStore = (place: Place) => {
+    const name = place?.name?.toLocaleLowerCase();
+    const rating = place?.rating || 0;
+
+    // ร้านที่ได้รับการรับรอง: ร้านใหญ่ที่มีชื่อเสียง หรือ ร้านที่มี rating สูง (4.0+)
+    const isBigBrand =
+      name?.includes("makro") ||
+      name?.includes("lotus") ||
+      name?.includes("cp") ||
+      name?.includes("tesco");
+
+    const hasHighRating = rating >= 4.0;
+
+    return isBigBrand || hasHighRating;
   };
 
   if (loadError) {
@@ -313,6 +331,7 @@ function MapScreen() {
                 <div className="flex items-center gap-3 mb-3">
                   <img
                     src={findLogoLocation(selectedPlace)}
+                    alt={`${selectedPlace.name} logo`}
                     width={40}
                     height={40}
                     className="rounded-full border-primary border-2 object-cover"
@@ -348,7 +367,7 @@ function MapScreen() {
           )}
 
           {/* Custom Zoom Controls */}
-          <div className="absolute bottom-[16px] right-[16px] flex h-[92px] w-[45px] flex-col items-center rounded-md bg-white shadow-md">
+          <div className="absolute bottom-[100px] right-[16px] flex h-[92px] w-[45px] flex-col items-center rounded-md bg-white shadow-md">
             <button
               onClick={handleZoomIn}
               className="h-full w-[45px] cursor-pointer p-1 text-lg font-extrabold hover:bg-gray-100 rounded-t-md transition-colors"
@@ -366,44 +385,141 @@ function MapScreen() {
         </GoogleMap>
 
         {/* Store List */}
-        {places.length > 0 && (
-          <div className="absolute bottom-0 left-0 right-0 bg-white shadow-lg rounded-t-2xl max-h-[40%] overflow-y-auto">
+        {(places?.length > 0 || isSearching) && (
+          <div className="absolute bottom-[70px] left-0 right-0 bg-gray-50 shadow-lg rounded-t-3xl max-h-[40%] overflow-y-auto">
             <div className="p-4">
-              <div className="flex items-center mb-3">
-                <MapPin className="w-5 h-5 text-primary mr-2" />
-                <h2 className="text-lg font-semibold text-gray-800">
-                  พบ {places.length} ร้าน
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Nearby Stores
                 </h2>
+                {!isSearching && (
+                  <span className="text-lg font-semibold text-gray-500 bg-gray-200 rounded-full px-3 py-1">
+                    {places.length}
+                  </span>
+                )}
+                {isSearching && (
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-primary"></div>
+                )}
               </div>
-              <div className="space-y-2">
-                {places.map((place) => (
-                  <div
-                    key={place.id}
-                    onClick={() => {
-                      setSelectedPlace(place);
-                      mapRef.current?.panTo(place.position);
-                      mapRef.current?.setZoom(16);
-                    }}
-                    className="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
-                  >
-                    <h3 className="font-medium text-gray-800">{place.name}</h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {place.address}
-                    </p>
-                    <div className="flex items-center gap-3 mt-1">
-                      {place.distance && (
-                        <p className="text-sm text-blue-600">
-                          📍 {place.distance} กม.
-                        </p>
-                      )}
-                      {place.rating && (
-                        <p className="text-sm text-yellow-600">
-                          ⭐ {place.rating.toFixed(1)}
-                        </p>
-                      )}
+
+              {/* Store Cards or Skeleton */}
+              <div className="space-y-3">
+                {isSearching ? (
+                  // Skeleton Loading
+                  <>
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="bg-white rounded-2xl shadow-md overflow-hidden animate-pulse"
+                      >
+                        <div className="flex gap-4 p-3">
+                          {/* Skeleton Image */}
+                          <div className="w-24 h-24 flex-shrink-0 rounded-xl bg-gray-200"></div>
+
+                          {/* Skeleton Info */}
+                          <div className="flex-1 min-w-0 space-y-3">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="h-5 bg-gray-200 rounded w-3/4"></div>
+                              <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+                            </div>
+                            <div className="h-4 bg-gray-200 rounded w-full"></div>
+                            <div className="flex items-center gap-3">
+                              <div className="h-4 bg-gray-200 rounded w-16"></div>
+                              <div className="h-4 bg-gray-200 rounded w-16"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  // Actual Store Cards
+                  places.map((place) => (
+                    <div
+                      key={place.id}
+                      onClick={() => {
+                        setSelectedPlace(place);
+                        mapRef.current?.panTo(place.position);
+                        mapRef.current?.setZoom(16);
+                      }}
+                      className="bg-white rounded-2xl shadow-md hover:shadow-lg cursor-pointer transition-shadow overflow-hidden"
+                    >
+                      <div className="flex gap-4 p-3">
+                        {/* Store Image */}
+                        <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
+                          <img
+                            src={findLogoLocation(place)}
+                            alt={place.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        {/* Store Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-1">
+                            <h3 className="font-bold text-gray-800 text-base">
+                              {place.name}
+                            </h3>
+                            {isCertifiedStore(place) && (
+                              <span className="flex items-center gap-1 bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0">
+                                <svg
+                                  className="w-3 h-3"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                CERTIFIED
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-sm text-gray-500 mb-2 line-clamp-1">
+                            {place.address}
+                          </p>
+
+                          {/* Rating and Distance */}
+                          <div className="flex items-center gap-3 text-sm">
+                            {place.rating && (
+                              <div className="flex items-center gap-1">
+                                <span className="text-yellow-500 text-base">
+                                  ★
+                                </span>
+                                <span className="font-semibold text-gray-700">
+                                  {place.rating.toFixed(1)}
+                                </span>
+                                <span className="text-gray-400">(120)</span>
+                              </div>
+                            )}
+                            {place.distance && (
+                              <div className="flex items-center gap-1 text-gray-600">
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                <span className="font-medium">
+                                  {place.distance} km
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
