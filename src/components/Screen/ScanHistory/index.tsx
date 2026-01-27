@@ -5,12 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function ScanHistoryScreen() {
   const { scanHistory, deleteScanHistory, clearAllHistory } = useAppContext();
-
   const navigate = useNavigate();
-
-  console.log("📜 Current Scan History:", scanHistory);
-  console.log("📊 History length:", scanHistory.length);
-
   const getDateSection = (date: Date): string => {
     const today = new Date();
     const yesterday = new Date(today);
