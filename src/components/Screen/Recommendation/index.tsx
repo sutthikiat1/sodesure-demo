@@ -73,7 +73,7 @@ function RecommendationScreen() {
         </div>
 
         {/* Optimal Temperature */}
-        <div className="mb-6 h-20 px-5 rounded-2xl bg-gray-100 items-center flex">
+        <div className="mb-4.5 h-20 px-5 rounded-2xl bg-gray-100 items-center flex">
           <div className="bg-blue-100 rounded-lg p-3 w-12! h-12! grid gap-5 ">
             <Thermometer className=" text-blue-600" />
           </div>
