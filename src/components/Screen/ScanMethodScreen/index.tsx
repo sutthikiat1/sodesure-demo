@@ -99,9 +99,9 @@ function ScanMethodScreen() {
     }
   };
 
-  // useEffect(() => {
-  //   resetStateScan();
-  // }, []);
+  useEffect(() => {
+    resetStateScan();
+  }, []);
 
   return (
     <div className={`p-4 min-h-dvh my-18 ${bgColorFromPredictClass()}`}>
