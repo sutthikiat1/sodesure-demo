@@ -65,14 +65,14 @@ const index = () => {
       currentHour < 12
         ? "สวัสดีตอนเช้า"
         : currentHour < 18
-        ? "สวัสดีตอนบ่าย"
-        : "สวัสดีตอนเย็น";
+          ? "สวัสดีตอนบ่าย"
+          : "สวัสดีตอนเย็น";
 
     return (
       <div className="px-4 mb-4">
         <div className="mb-3">
           <h1 className="text-2xl font-bold text-gray-800">
-            {greeting}, <span className="text-primary">Chef</span>
+            {greeting}!
           </h1>
           <p className="text-gray-500 text-sm mt-1">
             พร้อมที่จะตรวจสอบความสดของเนื้อแล้วหรือยัง?
@@ -163,8 +163,8 @@ const index = () => {
                 confidence >= 90
                   ? "bg-green-100 text-green-700"
                   : confidence >= 80
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-red-100 text-red-700";
+                    ? "bg-yellow-100 text-yellow-700"
+                    : "bg-red-100 text-red-700";
 
               return (
                 <div
