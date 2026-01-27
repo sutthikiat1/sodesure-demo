@@ -413,7 +413,7 @@ function MapScreen() {
               </div>
 
               {/* Store Cards or Skeleton */}
-              <div className="space-y-3">
+              <div className="space-y-3 mb-20">
                 {isSearching ? (
                   // Skeleton Loading
                   <>
