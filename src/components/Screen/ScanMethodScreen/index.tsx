@@ -1,6 +1,5 @@
 import { Camera, BadgeAlert, BadgeX, BadgeCheck, Store } from "lucide-react";
 import { useAppContext } from "../../../AppContext";
-import { useEffect } from "react";
 
 function ScanMethodScreen() {
   const {
@@ -10,7 +9,6 @@ function ScanMethodScreen() {
     isScanLoading,
     selectedImage,
     resetStateScan,
-    startCamera,
   } = useAppContext();
 
   const handleFileSelect = () => {
@@ -119,7 +117,7 @@ function ScanMethodScreen() {
           <div className="drop-shadow-md bg-white rounded-3xl p-6 w-full left-0 flex flex-col gap-4 relative">
             <div
               className={`${bgColorFromPredictClass(
-                true
+                true,
               )} rounded-full border-3 border-white text-center -top-10 px-4 py-2 absolute left-1/2 -translate-x-1/2 z-10`}
             >
               <span className="text-white text-2xl inline-flex items-center gap-2">
