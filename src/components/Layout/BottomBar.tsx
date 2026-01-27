@@ -1,9 +1,11 @@
 import { Home, BookOpen, Store, Camera, History } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAppContext } from "../../AppContext";
 
 const BottomBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { resetStateScan } = useAppContext();
   const isActive = (path: string) => location.pathname === path;
   return (
     <div className="w-full bg-slate-100 rounded-t-3xl shadow-2xl shadow-gray-300 fixed bottom-0 left-0 right-0 min-h-[70px] flex justify-between px-4 items-center z-50">
@@ -37,6 +39,7 @@ const BottomBar = () => {
 
       <div
         onClick={() => {
+          resetStateScan();
           navigate("/scan");
         }}
         className="flex flex-col gap-[2px] bg-primary min-w-15 rounded-xl min-h-10 items-center p-1 cursor-pointer max-w-15"
