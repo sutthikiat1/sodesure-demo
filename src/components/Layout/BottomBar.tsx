@@ -18,7 +18,7 @@ const BottomBar = () => {
             isActive("/") ? "text-primary" : "text-gray-600"
           }`}
         />
-        <span className="text-xs font-medium text-center">Home</span>
+        <span className="text-xs font-medium text-center">หน้าแรก</span>
       </div>
 
       <div
