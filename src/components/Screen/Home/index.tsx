@@ -4,12 +4,12 @@ import {
   ChevronRight,
   Snowflake,
   Clock,
-  Thermometer,
-  Package,
   Camera,
   ScanLine,
   History,
   Sparkles,
+  Refrigerator,
+  CookingPot,
 } from "lucide-react";
 import type { HistoryItem } from "../../../AppContext";
 import { useNavigate } from "react-router-dom";
@@ -384,7 +384,7 @@ const index = () => {
       },
       {
         id: 3,
-        icon: Thermometer,
+        icon: CookingPot,
         title: "ปรุงให้สุก",
         description: "ปรุงให้สุกที่อุณหภูมิ 63°C เพื่อความปลอดภัย",
         bgColor: "bg-orange-50",
@@ -392,7 +392,7 @@ const index = () => {
       },
       {
         id: 4,
-        icon: Package,
+        icon: Refrigerator,
         title: "เก็บรักษาอย่างถูกวิธี",
         description: "ใช้ภาชนะปิดสนิทเพื่อรักษาความสดนานขึ้น",
         bgColor: "bg-green-50",

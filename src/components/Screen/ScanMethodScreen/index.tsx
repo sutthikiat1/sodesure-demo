@@ -133,6 +133,21 @@ const animationStyles = `
     animation: rotate-bg 20s linear infinite;
   }
 
+  /* Result icon animation - gentle bounce */
+  @keyframes icon-bounce {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-2px) scale(1.1);
+    }
+  }
+
+  .result-icon-bounce {
+    display: inline-block;
+    animation: icon-bounce 1.5s ease-in-out infinite;
+  }
+
 `;
 
 function ScanMethodScreen() {
@@ -242,14 +257,23 @@ function ScanMethodScreen() {
         {/* ========== RESULT STATE ========== */}
         {!isScanLoading && scanResult && (
           <div className="flex flex-col gap-5 animate-fade-in">
-            {/* Header */}
-            <div className="text-center">
-              <h1 className="text-xl font-bold text-gray-800 mb-1">
-                ผลการประเมิน
-              </h1>
-              <p className={`text-2xl font-bold ${textColorFromPredictClass()}`}>
-                {getTextFromPredictClass()}
-              </p>
+            {/* Header Card */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-white/50">
+              <div className="flex items-center justify-center gap-3">
+                {/* Icon Circle */}
+                <div className={`w-12 h-12 rounded-full ${bgColorFromPredictClass(true)} flex items-center justify-center shadow-md`}>
+                  <span className="result-icon-bounce">
+                    {getIconFromPredictClass()}
+                  </span>
+                </div>
+                {/* Text */}
+                <div className="text-left">
+                  <p className="text-sm text-gray-500 font-medium">ผลการประเมิน</p>
+                  <p className={`text-2xl font-bold ${textColorFromPredictClass()}`}>
+                    {getTextFromPredictClass()}
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Image with badge */}
@@ -269,7 +293,7 @@ function ScanMethodScreen() {
                 )} rounded-full px-5 py-2 shadow-lg border-4 border-white`}
               >
                 <span className="text-white text-base font-semibold inline-flex items-center gap-2">
-                  <span className="inline-flex">
+                  <span className="inline-flex result-icon-bounce">
                     {getIconFromPredictClass()}
                   </span>
                   {getTextFromPredictClass(true)}
