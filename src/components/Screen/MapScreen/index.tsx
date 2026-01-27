@@ -6,7 +6,7 @@ import {
   InfoWindow,
   OverlayView,
 } from "@react-google-maps/api";
-import { ArrowLeft, MapPin, Plus, Minus } from "lucide-react";
+import { MapPin, Plus, Minus } from "lucide-react";
 import { useAppContext } from "../../../AppContext";
 import MakroLogo from "../../../assets/makrologo.png";
 import LotusLogo from "../../../assets/lotuslogo.png";
@@ -46,6 +46,8 @@ function MapScreen() {
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_APIKEY || "",
     libraries: libraries,
   });
+  const [isExpanded, setIsExpanded] = useState(false);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Get user location
   useEffect(() => {
@@ -61,7 +63,7 @@ function MapScreen() {
         (error) => {
           console.error("Error getting location:", error);
           setUserLocation(defaultCenter);
-        }
+        },
       );
     } else {
       setUserLocation(defaultCenter);
@@ -100,7 +102,7 @@ function MapScreen() {
               if (place.place_id && place.geometry?.location && place.name) {
                 // Check if place already exists
                 const exists = allFoundPlaces.some(
-                  (p) => p.id === place.place_id
+                  (p) => p.id === place.place_id,
                 );
 
                 if (!exists) {
@@ -114,9 +116,9 @@ function MapScreen() {
                     google.maps.geometry.spherical.computeDistanceBetween(
                       new google.maps.LatLng(
                         userLocation.lat,
-                        userLocation.lng
+                        userLocation.lng,
                       ),
-                      new google.maps.LatLng(placePos.lat, placePos.lng)
+                      new google.maps.LatLng(placePos.lat, placePos.lng),
                     );
 
                   if (
@@ -142,7 +144,7 @@ function MapScreen() {
           if (completedSearches === searchTerms.length) {
             // Sort by distance
             const sortedPlaces = allFoundPlaces.sort(
-              (a, b) => (a.distance || 0) - (b.distance || 0)
+              (a, b) => (a.distance || 0) - (b.distance || 0),
             );
             setPlaces(sortedPlaces);
             setIsSearching(false);
@@ -244,149 +246,152 @@ function MapScreen() {
 
   return (
     <div className="min-h-screen mx-auto bg-white flex flex-col">
-      {/* Header */}
-      <div className="bg-primary text-white p-4 shadow-md flex items-center">
-        <button
-          onClick={() => setCurrentScreen("features")}
-          className="mr-4 p-2 hover:bg-white/10 rounded-full transition-colors"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <h1 className="text-xl font-semibold">ร้านค้าใกล้เคียง</h1>
-      </div>
-
       {/* Map */}
       <div className="flex-1 relative">
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          mapContainerClassName="map-container"
-          center={userLocation || defaultCenter}
-          zoom={14}
-          onLoad={onMapLoad}
-          options={{
-            disableDefaultUI: true,
-            zoomControl: false,
-            streetViewControl: false,
-            mapTypeControl: false,
-            fullscreenControl: false,
-            clickableIcons: false,
-          }}
-        >
-          {/* User Location Marker */}
-          {userLocation && (
-            <Marker
-              position={userLocation}
-              icon={{
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 10,
-                fillColor: "#4285F4",
-                fillOpacity: 1,
-                strokeColor: "#ffffff",
-                strokeWeight: 3,
-              }}
-            />
-          )}
+        <div ref={mapContainerRef}>
+          <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            mapContainerClassName="map-container"
+            center={userLocation || defaultCenter}
+            zoom={14}
+            onLoad={onMapLoad}
+            options={{
+              disableDefaultUI: true,
+              zoomControl: false,
+              streetViewControl: false,
+              mapTypeControl: false,
+              fullscreenControl: false,
+              clickableIcons: false,
+            }}
+          >
+            {/* User Location Marker */}
+            {userLocation && (
+              <Marker
+                position={userLocation}
+                icon={{
+                  path: google.maps.SymbolPath.CIRCLE,
+                  scale: 10,
+                  fillColor: "#4285F4",
+                  fillOpacity: 1,
+                  strokeColor: "#ffffff",
+                  strokeWeight: 3,
+                }}
+              />
+            )}
 
-          {/* Store Markers */}
-          {places.map((place) => {
-            return (
-              <OverlayView
-                key={place.id}
-                position={place.position}
-                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+            {/* Store Markers */}
+            {places.map((place) => {
+              return (
+                <OverlayView
+                  key={place.id}
+                  position={place.position}
+                  mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                >
+                  <div
+                    onClick={() => setSelectedPlace(place)}
+                    className="cursor-pointer transform -translate-x-1/2 -translate-y-full flex justify-center flex-col w-fit"
+                  >
+                    {findLogoLocation(place) ? (
+                      // รูปภาพแบบวงกลมไม่มีพื้นหลัง
+                      <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-lg bg-transparent">
+                        <img
+                          src={findLogoLocation(place)}
+                          alt={place.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      // Default marker icon
+                      <div className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center border-2 border-white shadow-lg">
+                        <MapPin className="w-5 h-5 text-white" />
+                      </div>
+                    )}
+                    {/* หางของ marker */}
+                    <div className="w-0 h-0 border-l-[8px] border-r-[8px] border-t-[10px] border-l-transparent border-r-transparent border-t-white mx-auto -mt-[2px]" />
+                  </div>
+                </OverlayView>
+              );
+            })}
+
+            {/* Info Window */}
+            {selectedPlace && (
+              <InfoWindow
+                position={selectedPlace.position}
+                onCloseClick={() => setSelectedPlace(null)}
               >
-                <div
-                  onClick={() => setSelectedPlace(place)}
-                  className="cursor-pointer transform -translate-x-1/2 -translate-y-full flex justify-center flex-col w-fit"
-                >
-                  {findLogoLocation(place) ? (
-                    // รูปภาพแบบวงกลมไม่มีพื้นหลัง
-                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-lg bg-transparent">
-                      <img
-                        src={findLogoLocation(place)}
-                        alt={place.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    // Default marker icon
-                    <div className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center border-2 border-white shadow-lg">
-                      <MapPin className="w-5 h-5 text-white" />
-                    </div>
+                <div className="p-2">
+                  <div className="flex items-center gap-3 mb-3">
+                    <img
+                      src={findLogoLocation(selectedPlace)}
+                      alt={`${selectedPlace.name} logo`}
+                      width={40}
+                      height={40}
+                      className="rounded-full border-primary border-2 object-cover"
+                    />
+                    <h3 className="font-semibold text-gray-800 mb-1">
+                      {selectedPlace.name}
+                    </h3>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {selectedPlace.address}
+                  </p>
+                  {selectedPlace.distance && (
+                    <p className="text-sm text-blue-600 mb-1">
+                      📍 {selectedPlace.distance} กม.
+                    </p>
                   )}
-                  {/* หางของ marker */}
-                  <div className="w-0 h-0 border-l-[8px] border-r-[8px] border-t-[10px] border-l-transparent border-r-transparent border-t-white mx-auto -mt-[2px]" />
+                  {selectedPlace.rating && (
+                    <p className="text-sm text-yellow-600">
+                      ⭐ {selectedPlace.rating.toFixed(1)}
+                    </p>
+                  )}
+                  <button
+                    onClick={() => {
+                      const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.position.lat},${selectedPlace.position.lng}`;
+                      window.open(url, "_blank");
+                    }}
+                    className="mt-2 text-sm text-primary font-medium hover:underline"
+                  >
+                    นำทาง
+                  </button>
                 </div>
-              </OverlayView>
-            );
-          })}
+              </InfoWindow>
+            )}
 
-          {/* Info Window */}
-          {selectedPlace && (
-            <InfoWindow
-              position={selectedPlace.position}
-              onCloseClick={() => setSelectedPlace(null)}
-            >
-              <div className="p-2">
-                <div className="flex items-center gap-3 mb-3">
-                  <img
-                    src={findLogoLocation(selectedPlace)}
-                    alt={`${selectedPlace.name} logo`}
-                    width={40}
-                    height={40}
-                    className="rounded-full border-primary border-2 object-cover"
-                  />
-                  <h3 className="font-semibold text-gray-800 mb-1">
-                    {selectedPlace.name}
-                  </h3>
-                </div>
-                <p className="text-sm text-gray-600 mb-2">
-                  {selectedPlace.address}
-                </p>
-                {selectedPlace.distance && (
-                  <p className="text-sm text-blue-600 mb-1">
-                    📍 {selectedPlace.distance} กม.
-                  </p>
-                )}
-                {selectedPlace.rating && (
-                  <p className="text-sm text-yellow-600">
-                    ⭐ {selectedPlace.rating.toFixed(1)}
-                  </p>
-                )}
-                <button
-                  onClick={() => {
-                    const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.position.lat},${selectedPlace.position.lng}`;
-                    window.open(url, "_blank");
-                  }}
-                  className="mt-2 text-sm text-primary font-medium hover:underline"
-                >
-                  นำทาง
-                </button>
-              </div>
-            </InfoWindow>
-          )}
-
-          {/* Custom Zoom Controls */}
-          <div className="absolute bottom-[100px] right-[16px] flex h-[92px] w-[45px] flex-col items-center rounded-md bg-white shadow-md">
-            <button
-              onClick={handleZoomIn}
-              className="h-full w-[45px] cursor-pointer p-1 text-lg font-extrabold hover:bg-gray-100 rounded-t-md transition-colors"
-            >
-              <Plus className="w-6 h-6 mx-auto" />
-            </button>
-            <div className="h-[1px] w-[80%] bg-slate-200" />
-            <button
-              onClick={handleZoomOut}
-              className="h-full w-[45px] cursor-pointer p-1 text-lg font-extrabold hover:bg-gray-100 rounded-b-md transition-colors"
-            >
-              <Minus className="w-6 h-6 mx-auto" />
-            </button>
-          </div>
-        </GoogleMap>
-
+            {/* Custom Zoom Controls */}
+            <div className="absolute bottom-[100px] right-[16px] flex h-[92px] w-[45px] flex-col items-center rounded-md bg-white shadow-md">
+              <button
+                onClick={handleZoomIn}
+                className="h-full w-[45px] cursor-pointer p-1 text-lg font-extrabold hover:bg-gray-100 rounded-t-md transition-colors"
+              >
+                <Plus className="w-6 h-6 mx-auto" />
+              </button>
+              <div className="h-[1px] w-[80%] bg-slate-200" />
+              <button
+                onClick={handleZoomOut}
+                className="h-full w-[45px] cursor-pointer p-1 text-lg font-extrabold hover:bg-gray-100 rounded-b-md transition-colors"
+              >
+                <Minus className="w-6 h-6 mx-auto" />
+              </button>
+            </div>
+          </GoogleMap>
+        </div>
         {/* Store List */}
+        <div
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full py-2 flex justify-center cursor-pointer"
+        >
+          <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+        </div>
+
         {(places?.length > 0 || isSearching) && (
-          <div className="absolute bottom-[70px] left-0 right-0 bg-gray-50 shadow-lg rounded-t-3xl max-h-[40%] overflow-y-auto">
+          <div
+            className={`
+              absolute left-0 right-0 bg-gray-50 shadow-lg rounded-t-3xl
+              transition-all duration-300 ease-in-out
+                ${isExpanded ? "top-[70px] bottom-0" : "bottom-[70px] max-h-[120px]"}
+            `}
+          >
             <div className="p-4">
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
@@ -439,9 +444,18 @@ function MapScreen() {
                     <div
                       key={place.id}
                       onClick={() => {
-                        setSelectedPlace(place);
-                        mapRef.current?.panTo(place.position);
-                        mapRef.current?.setZoom(16);
+                        setIsExpanded(false);
+
+                        mapContainerRef.current?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+
+                        setTimeout(() => {
+                          mapRef.current?.panTo(place.position);
+                          mapRef.current?.setZoom(16);
+                          setSelectedPlace(place);
+                        }, 300);
                       }}
                       className="bg-white rounded-2xl shadow-md hover:shadow-lg cursor-pointer transition-shadow overflow-hidden"
                     >
