@@ -87,13 +87,6 @@ const index = () => {
               <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center shadow-lg">
                 <Camera className="w-10 h-10 text-white" />
               </div>
-
-              {/* Decorative Elements */}
-              <div className="absolute -right-10 top-2 w-10 h-10 bg-gray-100 rounded-lg opacity-50"></div>
-              <div className="absolute -right-6 top-6 w-7 h-7 bg-gray-100 rounded-lg opacity-40"></div>
-              <div className="absolute -right-3 -bottom-1 w-8 h-8 bg-gray-100 rounded-lg opacity-30 flex items-center justify-center">
-                <ScanLine className="w-4 h-4 text-gray-400" />
-              </div>
             </div>
           </div>
 
