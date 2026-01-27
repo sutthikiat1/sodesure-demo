@@ -63,7 +63,7 @@ function MapScreen() {
         (error) => {
           console.error("Error getting location:", error);
           setUserLocation(defaultCenter);
-        },
+        }
       );
     } else {
       setUserLocation(defaultCenter);
@@ -102,7 +102,7 @@ function MapScreen() {
               if (place.place_id && place.geometry?.location && place.name) {
                 // Check if place already exists
                 const exists = allFoundPlaces.some(
-                  (p) => p.id === place.place_id,
+                  (p) => p.id === place.place_id
                 );
 
                 if (!exists) {
@@ -116,9 +116,9 @@ function MapScreen() {
                     google.maps.geometry.spherical.computeDistanceBetween(
                       new google.maps.LatLng(
                         userLocation.lat,
-                        userLocation.lng,
+                        userLocation.lng
                       ),
-                      new google.maps.LatLng(placePos.lat, placePos.lng),
+                      new google.maps.LatLng(placePos.lat, placePos.lng)
                     );
 
                   if (
@@ -144,7 +144,7 @@ function MapScreen() {
           if (completedSearches === searchTerms.length) {
             // Sort by distance
             const sortedPlaces = allFoundPlaces.sort(
-              (a, b) => (a.distance || 0) - (b.distance || 0),
+              (a, b) => (a.distance || 0) - (b.distance || 0)
             );
             setPlaces(sortedPlaces);
             setIsSearching(false);
@@ -389,7 +389,11 @@ function MapScreen() {
             className={`
               absolute left-0 right-0 bg-gray-50 shadow-lg rounded-t-3xl
               transition-all duration-300 ease-in-out
-                ${isExpanded ? "top-[70px] bottom-0" : "bottom-[70px] max-h-[120px]"}
+                ${
+                  isExpanded
+                    ? "top-[70px] bottom-0"
+                    : "bottom-[70px] max-h-[calc(100vh_-_610px)]"
+                }
             `}
           >
             <div className="p-4">

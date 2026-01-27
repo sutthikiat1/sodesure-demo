@@ -26,15 +26,12 @@ function ScanHistoryScreen() {
     return "OLDER";
   };
 
-  const groupedHistory = scanHistory.reduce(
-    (acc, item) => {
-      const section = getDateSection(item.timestamp);
-      if (!acc[section]) acc[section] = [];
-      acc[section].push(item);
-      return acc;
-    },
-    {} as Record<string, HistoryItem[]>,
-  );
+  const groupedHistory = scanHistory.reduce((acc, item) => {
+    const section = getDateSection(item.timestamp);
+    if (!acc[section]) acc[section] = [];
+    acc[section].push(item);
+    return acc;
+  }, {} as Record<string, HistoryItem[]>);
 
   const sectionOrder = ["TODAY", "YESTERDAY", "LAST WEEK", "OLDER"];
   const orderedSections = sectionOrder.filter((s) => groupedHistory[s]);
@@ -70,7 +67,7 @@ function ScanHistoryScreen() {
   const handleClearAll = () => {
     if (
       window.confirm(
-        `คุณต้องการลบประวัติการสแกนทั้งหมด ${scanHistory.length} รายการหรือไม่?`,
+        `คุณต้องการลบประวัติการสแกนทั้งหมด ${scanHistory.length} รายการหรือไม่?`
       )
     ) {
       clearAllHistory();
@@ -78,7 +75,7 @@ function ScanHistoryScreen() {
   };
 
   return (
-    <div className="min-h-screen max-w-full mx-auto bg-gray-50 flex flex-col mt-18">
+    <div className="min-h-screen max-w-full mx-auto bg-gray-50 flex flex-col my-18">
       {/* Content */}
       <div className="flex-1 overflow-y-auto px-4 lg:px-8 py-4">
         {scanHistory.length === 0 ? (
@@ -164,7 +161,7 @@ function ScanHistoryScreen() {
                         </p>
                         <div
                           className={`border inline-block px-3 text-sm rounded-full ${getStatusColor(
-                            item.result,
+                            item.result
                           )}`}
                         >
                           {getStatusText(item.result)}
