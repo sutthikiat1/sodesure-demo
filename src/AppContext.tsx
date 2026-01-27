@@ -54,6 +54,7 @@ interface AppContextType {
   resetApp: () => void;
   setIsScanLoading: (isLoading: boolean) => void;
   isScanLoading: boolean;
+  resetStateScan: () => void;
 }
 
 // Create Context
@@ -302,6 +303,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     stopCamera();
   };
 
+  const resetStateScan = () => {
+    setSelectedImage(null);
+    setScanResult(null);
+    setIsAnalyzing(false);
+  };
+
   const value: AppContextType = {
     currentScreen,
     setCurrentScreen,
@@ -327,6 +334,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     resetApp,
     isScanLoading,
     setIsScanLoading,
+    resetStateScan,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -1,5 +1,6 @@
-import { Camera } from "lucide-react";
+import { Camera, CircleAlert, CircleX, Diamond } from "lucide-react";
 import { useAppContext } from "../../../AppContext";
+import { useEffect } from "react";
 
 function ScanMethodScreen() {
   const {
@@ -8,6 +9,7 @@ function ScanMethodScreen() {
     scanResult,
     isScanLoading,
     selectedImage,
+    resetStateScan,
   } = useAppContext();
 
   const handleFileSelect = () => {
@@ -16,11 +18,11 @@ function ScanMethodScreen() {
 
   const bgColorFromPredictClass = (intense?: boolean) => {
     if (scanResult?.predicted_class === "fresh") {
-      return intense ? "bg-green-600" : "bg-green-50";
+      return intense ? "bg-primary" : "bg-green-50";
     } else if (scanResult?.predicted_class === "rotten") {
       return intense ? "bg-yellow-600" : "bg-yellow-50";
     } else if (scanResult?.predicted_class === "Invalid (Non-Meat)") {
-      return intense ? "bg-red-500" : "bg-red-50";
+      return intense ? "bg-red-600" : "bg-red-50";
     } else {
       return "bg-white";
     }
@@ -28,13 +30,23 @@ function ScanMethodScreen() {
 
   const textColorFromPredictClass = () => {
     if (scanResult?.predicted_class === "fresh") {
-      return "text-green-600";
+      return "text-primary";
     } else if (scanResult?.predicted_class === "rotten") {
       return "text-yellow-600";
     } else if (scanResult?.predicted_class === "Invalid (Non-Meat)") {
       return "text-red-600";
     } else {
       return "text-black";
+    }
+  };
+
+  const getIconFromPredictClass = () => {
+    if (scanResult?.predicted_class === "fresh") {
+      return <Diamond className="text-white" />;
+    } else if (scanResult?.predicted_class === "rotten") {
+      return <CircleAlert className="text-white" />;
+    } else if (scanResult?.predicted_class === "Invalid (Non-Meat)") {
+      return <CircleX className="text-white" />;
     }
   };
 
@@ -50,11 +62,49 @@ function ScanMethodScreen() {
     }
   };
 
+  const getTextColorPercent = () => {
+    if (scanResult?.confidence) {
+      if (scanResult?.confidence >= 0.8) {
+        return "text-green-600";
+      } else if (scanResult.confidence >= 0.5) {
+        return "text-yellow-600";
+      } else if (scanResult.confidence < 0.5) {
+        return "text-red-600";
+      }
+    }
+  };
+
+  const getBgColorPercent = () => {
+    if (scanResult?.confidence) {
+      if (scanResult?.confidence >= 0.8) {
+        return "bg-green-600";
+      } else if (scanResult.confidence >= 0.4) {
+        return "bg-yellow-600";
+      } else if (scanResult.confidence < 0.4) {
+        return "bg-red-600";
+      }
+    }
+  };
+
+  const getDescriptionFromPredictClass = () => {
+    if (scanResult?.predicted_class === "fresh") {
+      return "เหมาะสำหรับการปรุงอาหารและบริโภค";
+    } else if (scanResult?.predicted_class === "rotten") {
+      return "ควรหลีกเลี่ยงการบริโภคเนื้อสัตว์นี้";
+    } else if (scanResult?.predicted_class === "Invalid (Non-Meat)") {
+      return "โปรดอัปโหลดภาพเนื้อสัตว์ที่ถูกต้อง";
+    }
+  };
+
+  // useEffect(() => {
+  //   resetStateScan();
+  // }, []);
+
   return (
     <div className={`p-4 min-h-dvh mt-18 ${bgColorFromPredictClass()}`}>
       {!isScanLoading && scanResult && (
-        <div className="flex flex-col mt-4 gap-5 relative">
-          <h1 className="text-3xl font-semibold text-black flex gap-2 justify-center">
+        <div className="flex flex-col mt-4 gap-5">
+          <h1 className="text-2xl font-semibold text-black flex gap-2 justify-center">
             ผลการประเมิน:{""}
             <span className={textColorFromPredictClass()}>
               {getTextFromPredictClass()}
@@ -63,23 +113,41 @@ function ScanMethodScreen() {
           <img
             alt={"scan-result-img"}
             src={selectedImage as string}
-            className="max-h-[320px] object-cover rounded-xl"
+            className="max-h-[320px] object-cover rounded-3xl shadow-md "
           />
-          <div className="shadow-xl bg-white rounded-xl p-6 mt-6 absolute bottom-[-335px] h-full w-full left-0">
+          <div className="drop-shadow-md bg-white rounded-3xl p-6 w-full left-0 flex flex-col gap-4 relative">
             <div
               className={`${bgColorFromPredictClass(
                 true
-              )} rounded-full border-2 border-white shadow text-center w-24 p-2`}
+              )} rounded-full border-3 border-white text-center -top-10 px-4 py-2 absolute left-1/2 -translate-x-1/2 z-10`}
             >
-              <span className="text-white">{getTextFromPredictClass()}</span>
+              <span className="text-white text-2xl inline-flex items-center gap-2">
+                {getIconFromPredictClass()}
+                {getTextFromPredictClass()}
+              </span>
             </div>
-            ความมั่นใจในการประเมินผล:{" "}
-            <span className="font-semibold">
-              {scanResult
-                ? (scanResult.confidence * 100).toFixed(2) + "%"
-                : "N/A"}
-            </span>
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between w-full">
+                <span>ระดับความเชื่อมั่น (AI Condifence)</span>
+                <span className={getTextColorPercent()}>
+                  {scanResult
+                    ? (scanResult.confidence * 100).toFixed(2) + "%"
+                    : "N/A"}
+                </span>
+              </div>
+              <div className="relative w-full bg-gray-200 h-4 rounded-full">
+                <div
+                  className={`absolute ${getBgColorPercent()} h-4 rounded-full`}
+                  style={{ width: `${(scanResult?.confidence ?? 0) * 100}%` }}
+                ></div>
+              </div>
+              <div className="h-[0.5px] w-full bg-gray-200 "></div>
+              <div className="text-xl text-center w-full">
+                {getDescriptionFromPredictClass()}
+              </div>
+            </div>
           </div>
+          <div className="rounded-3xl"></div>
         </div>
       )}
 
@@ -92,7 +160,7 @@ function ScanMethodScreen() {
       )}
       {!isScanLoading && !scanResult && (
         <div className="text-center flex-1 flex flex-col justify-center">
-          <h1 className="text-4xl text-shadow-md  font-bold text-primary mb-8">
+          <h1 className="text-4xl text-shadow-md  font-bold text- mb-8">
             ให้สิทธิการใช้งานกล้อง
           </h1>
 
