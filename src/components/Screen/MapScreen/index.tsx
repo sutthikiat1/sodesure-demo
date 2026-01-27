@@ -63,7 +63,7 @@ function MapScreen() {
         (error) => {
           console.error("Error getting location:", error);
           setUserLocation(defaultCenter);
-        }
+        },
       );
     } else {
       setUserLocation(defaultCenter);
@@ -102,7 +102,7 @@ function MapScreen() {
               if (place.place_id && place.geometry?.location && place.name) {
                 // Check if place already exists
                 const exists = allFoundPlaces.some(
-                  (p) => p.id === place.place_id
+                  (p) => p.id === place.place_id,
                 );
 
                 if (!exists) {
@@ -116,9 +116,9 @@ function MapScreen() {
                     google.maps.geometry.spherical.computeDistanceBetween(
                       new google.maps.LatLng(
                         userLocation.lat,
-                        userLocation.lng
+                        userLocation.lng,
                       ),
-                      new google.maps.LatLng(placePos.lat, placePos.lng)
+                      new google.maps.LatLng(placePos.lat, placePos.lng),
                     );
 
                   if (
@@ -144,11 +144,21 @@ function MapScreen() {
           if (completedSearches === searchTerms.length) {
             // Sort by distance
             const sortedPlaces = allFoundPlaces.sort(
-              (a, b) => (a.distance || 0) - (b.distance || 0)
+              (a, b) => (a.distance || 0) - (b.distance || 0),
             );
             setPlaces(sortedPlaces);
             setIsSearching(false);
           }
+
+          // เดี๋ยวลบ
+          // if (completedSearches === searchTerms.length) {
+          //   const sortedPlaces = allFoundPlaces.sort(
+          //     (a, b) => (a.distance || 0) - (b.distance || 0),
+          //   );
+
+          //   setPlaces(sortedPlaces.slice(0, 1));
+          //   setIsSearching(false);
+          // }
         });
       });
     }
@@ -216,7 +226,7 @@ function MapScreen() {
 
   if (loadError) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="flex items-center justify-center h-screen">
         <div className="text-center">
           <p className="text-red-600 mb-2">เกิดข้อผิดพลาดในการโหลดแผนที่</p>
           <p className="text-sm text-gray-600">
@@ -235,7 +245,7 @@ function MapScreen() {
 
   if (!isLoaded) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="flex items-center justify-center h-screen ">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">กำลังโหลดแผนที่...</p>
@@ -377,18 +387,13 @@ function MapScreen() {
           </GoogleMap>
         </div>
         {/* Store List */}
-
         {(places?.length > 0 || isSearching) && (
           <div
             className={`
-              absolute left-0 right-0 bg-gray-50 rounded-t-3xl
-              transition-all duration-300 ease-in-out
-              ${
-                isExpanded
-                  ? "top-[70px] bottom-0"
-                  : "bottom-[70px] max-h-[calc(100vh_-_580px)]"
-              }
-                `}
+                absolute left-0 right-0 rounded-t-3xl
+                transition-all duration-300 ease-in-out h-fit
+                ${isExpanded ? "" : ""}
+              `}
           >
             <div
               onClick={() => setIsExpanded(!isExpanded)}
@@ -400,7 +405,7 @@ function MapScreen() {
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold text-gray-800">
-                  Nearby Stores
+                  ร้านค้าใกล้เคียง
                 </h2>
                 {!isSearching && (
                   <span className="text-lg font-semibold text-gray-500 bg-gray-200 rounded-full px-3 py-1">
