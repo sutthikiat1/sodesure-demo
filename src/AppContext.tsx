@@ -52,6 +52,8 @@ interface AppContextType {
   handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   analyzeMeat: (data: IResponsePredict, imageUrl: string) => Promise<void>;
   resetApp: () => void;
+  setIsScanLoading: (isLoading: boolean) => void;
+  isScanLoading: boolean;
 }
 
 // Create Context
@@ -71,6 +73,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   const [scanResult, setScanResult] = useState<IResponsePredict | null>(null);
   const [scanHistory, setScanHistory] = useState<HistoryItem[]>([]);
   const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
+  const [isScanLoading, setIsScanLoading] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -206,6 +209,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     if (file) {
       console.log("📁 File selected:", file.name, file.type, file.size);
       const reader = new FileReader();
+      setIsScanLoading(true);
       reader.onload = async (e) => {
         const imageUrl = e.target?.result as string;
         console.log("🖼️ Image loaded, length:", imageUrl.length);
@@ -224,8 +228,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
           await analyzeMeat(response, imageUrl);
         } catch (error) {
           console.error("❌ Error during prediction:", error);
-          setIsAnalyzing(false);
           alert("เกิดข้อผิดพลาดในการวิเคราะห์");
+          setIsScanLoading(false);
         }
       };
       reader.readAsDataURL(file);
@@ -283,6 +287,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
           console.error("❌ No predicted_class in response:", data);
         }
 
+        setIsScanLoading(false);
         resolve();
       }, 2000);
     });
@@ -320,6 +325,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     handleFileUpload,
     analyzeMeat,
     resetApp,
+    isScanLoading,
+    setIsScanLoading,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

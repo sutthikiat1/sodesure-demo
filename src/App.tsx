@@ -16,6 +16,7 @@ import Layout from "./components/Layout/Layout.tsx";
 import MapScreen from "./components/Screen/MapScreen/index.tsx";
 import ScanHistoryScreen from "./components/Screen/ScanHistory/index.tsx";
 import RecommendationScreen from "./components/Screen/Recommendation/index.tsx";
+import ScanMethodScreen from "./components/Screen/ScanMethodScreen/index.tsx";
 
 const App: React.FC = () => {
   return (
@@ -36,7 +37,14 @@ const App: React.FC = () => {
           </Layout>
         }
       />
-      <Route path="/scan" element={<Layout>scan</Layout>} />
+      <Route
+        path="/scan"
+        element={
+          <Layout>
+            <ScanMethodScreen />
+          </Layout>
+        }
+      />
       <Route
         path="/history"
         element={
