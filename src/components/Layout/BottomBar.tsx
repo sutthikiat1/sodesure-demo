@@ -37,15 +37,18 @@ const BottomBar = () => {
         <span className="text-xs font-medium text-center">คำแนะนำ</span>
       </div>
 
-      <div
-        onClick={() => {
-          resetStateScan();
-          navigate("/scan");
-        }}
-        className="flex flex-col gap-[2px] bg-primary min-w-15 rounded-xl min-h-10 items-center p-1 cursor-pointer max-w-15"
-      >
-        <Camera className="text-white w-6 h-6" />
-        <span className="text-xs text-white font-medium text-center">Scan</span>
+      {/* Floating Scan Button */}
+      <div className="relative flex flex-col items-center -mt-8">
+        <div
+          onClick={() => {
+            resetStateScan();
+            navigate("/scan");
+          }}
+          className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center cursor-pointer shadow-lg shadow-primary/40 border-4 border-white active:scale-95 transition-transform"
+        >
+          <Camera className="text-white w-7 h-7" />
+        </div>
+        <span className="text-xs text-primary font-semibold mt-1">สแกน</span>
       </div>
 
       <div

@@ -376,28 +376,28 @@ function ScanMethodScreen() {
             <div className="relative mb-8">
               <div className="relative scan-float">
                 {/* Pulsing rings */}
-                <div className="absolute inset-0 w-32 h-32 -m-2 rounded-3xl border-2 border-primary/30 scan-pulse-ring" />
-                <div className="absolute inset-0 w-32 h-32 -m-2 rounded-3xl border border-primary/20 scan-pulse-ring-delay" />
+                <div className="absolute inset-0 w-24 h-24 -m-2 rounded-full border-2 border-primary/30 scan-pulse-ring" />
+                <div className="absolute inset-0 w-24 h-24 -m-2 rounded-full border border-primary/20 scan-pulse-ring-delay" />
 
-                {/* Main Icon Container */}
-                <div className="relative w-28 h-28 bg-gradient-to-br from-primary to-primary/80 rounded-3xl flex items-center justify-center shadow-xl shadow-primary/30">
-                  <Camera className="w-14 h-14 text-white" />
+                {/* Main Icon Container - Circular like Home */}
+                <div className="relative w-20 h-20 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-xl shadow-primary/30">
+                  <Camera className="w-10 h-10 text-white" />
                 </div>
 
                 {/* Sparkle decorations */}
-                <div className="absolute -top-2 -right-2 scan-sparkle-1">
-                  <Sparkles className="w-5 h-5 text-amber-400" />
-                </div>
-                <div className="absolute -bottom-1 -left-3 scan-sparkle-2">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                </div>
-                <div className="absolute top-1/2 -right-5 scan-sparkle-3">
+                <div className="absolute -top-1 -right-1 scan-sparkle-1">
                   <Sparkles className="w-4 h-4 text-amber-400" />
+                </div>
+                <div className="absolute -bottom-1 -left-2 scan-sparkle-2">
+                  <Sparkles className="w-3 h-3 text-primary" />
+                </div>
+                <div className="absolute top-1/2 -right-4 scan-sparkle-3">
+                  <Sparkles className="w-3 h-3 text-amber-400" />
                 </div>
 
                 {/* ImagePlus badge */}
-                <div className="absolute -top-1 -right-1 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md border border-gray-100">
-                  <ImagePlus className="w-4 h-4 text-primary" />
+                <div className="absolute -top-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md border border-gray-100">
+                  <ImagePlus className="w-3.5 h-3.5 text-primary" />
                 </div>
               </div>
             </div>

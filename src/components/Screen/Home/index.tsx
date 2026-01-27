@@ -206,11 +206,11 @@ const index = () => {
             <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-primary/5 rounded-full" />
 
             {/* Icon and Graphics */}
-            <div className="relative mb-5 flex justify-center">
+            <div className="relative mb-5 flex justify-center pt-8 pb-4">
               <div className="relative hero-float">
-                {/* Pulsing rings */}
-                <div className="absolute inset-0 w-24 h-24 -m-2 rounded-full border-2 border-primary/30 hero-pulse-ring" />
-                <div className="absolute inset-0 w-24 h-24 -m-2 rounded-full border border-primary/20 hero-pulse-ring-delay" />
+                {/* Pulsing rings - same size as main circle */}
+                <div className="absolute inset-0 w-20 h-20 rounded-full border-2 border-primary/30 hero-pulse-ring" />
+                <div className="absolute inset-0 w-20 h-20 rounded-full border border-primary/20 hero-pulse-ring-delay" />
 
                 {/* Main Circle */}
                 <div className="relative w-20 h-20 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-xl shadow-primary/30">
