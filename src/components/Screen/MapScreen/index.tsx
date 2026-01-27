@@ -377,25 +377,25 @@ function MapScreen() {
           </GoogleMap>
         </div>
         {/* Store List */}
-        <div
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full py-2 flex justify-center cursor-pointer"
-        >
-          <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
-        </div>
 
         {(places?.length > 0 || isSearching) && (
           <div
             className={`
-              absolute left-0 right-0 bg-gray-50 shadow-lg rounded-t-3xl
+              absolute left-0 right-0 bg-gray-50 rounded-t-3xl
               transition-all duration-300 ease-in-out
-                ${
-                  isExpanded
-                    ? "top-[70px] bottom-0"
-                    : "bottom-[70px] max-h-[calc(100vh_-_610px)]"
-                }
-            `}
+              ${
+                isExpanded
+                  ? "top-[70px] bottom-0"
+                  : "bottom-[70px] max-h-[calc(100vh_-_580px)]"
+              }
+                `}
           >
+            <div
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="w-full pt-2 flex justify-center cursor-pointer"
+            >
+              <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+            </div>
             <div className="p-4">
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
