@@ -1,4 +1,4 @@
-import { Camera, CircleAlert, CircleX, Diamond } from "lucide-react";
+import { Camera, BadgeAlert, BadgeX, BadgeCheck, Store } from "lucide-react";
 import { useAppContext } from "../../../AppContext";
 import { useEffect } from "react";
 
@@ -10,6 +10,7 @@ function ScanMethodScreen() {
     isScanLoading,
     selectedImage,
     resetStateScan,
+    startCamera,
   } = useAppContext();
 
   const handleFileSelect = () => {
@@ -36,27 +37,27 @@ function ScanMethodScreen() {
     } else if (scanResult?.predicted_class === "Invalid (Non-Meat)") {
       return "text-red-600";
     } else {
-      return "text-black";
+      return "text-gray-600";
     }
   };
 
   const getIconFromPredictClass = () => {
     if (scanResult?.predicted_class === "fresh") {
-      return <Diamond className="text-white" />;
+      return <BadgeCheck className="text-white" />;
     } else if (scanResult?.predicted_class === "rotten") {
-      return <CircleAlert className="text-white" />;
+      return <BadgeAlert className="text-white" />;
     } else if (scanResult?.predicted_class === "Invalid (Non-Meat)") {
-      return <CircleX className="text-white" />;
+      return <BadgeX className="text-white" />;
     }
   };
 
-  const getTextFromPredictClass = () => {
+  const getTextFromPredictClass = (isBadge?: boolean) => {
     if (scanResult?.predicted_class === "fresh") {
       return "สด";
     } else if (scanResult?.predicted_class === "rotten") {
       return "เสี่ยง";
     } else if (scanResult?.predicted_class === "Invalid (Non-Meat)") {
-      return "ไม่ถูกต้อง (ไม่ใช่เนื้อสัตว์)";
+      return isBadge ? "ไม่ใช่เนื้อสัตว์" : "ไม่ถูกต้อง (ไม่ใช่เนื้อสัตว์)";
     } else {
       return "";
     }
@@ -104,7 +105,7 @@ function ScanMethodScreen() {
     <div className={`p-4 min-h-dvh mt-18 ${bgColorFromPredictClass()}`}>
       {!isScanLoading && scanResult && (
         <div className="flex flex-col mt-4 gap-5">
-          <h1 className="text-2xl font-semibold text-black flex gap-2 justify-center">
+          <h1 className="text-2xl font-semibold text-gray-600 flex gap-2 justify-center">
             ผลการประเมิน:{""}
             <span className={textColorFromPredictClass()}>
               {getTextFromPredictClass()}
@@ -123,15 +124,15 @@ function ScanMethodScreen() {
             >
               <span className="text-white text-2xl inline-flex items-center gap-2">
                 {getIconFromPredictClass()}
-                {getTextFromPredictClass()}
+                {getTextFromPredictClass(true)}
               </span>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 text-gray-600">
               <div className="flex justify-between w-full">
                 <span>ระดับความเชื่อมั่น (AI Condifence)</span>
                 <span className={getTextColorPercent()}>
                   {scanResult
-                    ? (scanResult.confidence * 100).toFixed(2) + "%"
+                    ? (scanResult.confidence * 100).toFixed(0) + "%"
                     : "N/A"}
                 </span>
               </div>
@@ -147,7 +148,19 @@ function ScanMethodScreen() {
               </div>
             </div>
           </div>
-          <div className="rounded-3xl"></div>
+          <div
+            onClick={resetStateScan}
+            className="rounded-3xl text-gray-600 w-full bg-white shadow-md px-6 py-4 flex gap-4"
+          >
+            <Camera />
+            <span>Scan อีกครั้ง</span>
+          </div>
+          {scanResult?.predicted_class !== "fresh" && (
+            <div className="rounded-3xl text-gray-600 w-full bg-white shadow-md px-6 py-4 flex gap-4">
+              <Store />
+              <span>ค้นหาร้านค้าใกล้ฉัน</span>
+            </div>
+          )}
         </div>
       )}
 
@@ -159,21 +172,18 @@ function ScanMethodScreen() {
         </div>
       )}
       {!isScanLoading && !scanResult && (
-        <div className="text-center flex-1 flex flex-col justify-center">
-          <h1 className="text-4xl text-shadow-md  font-bold text- mb-8">
+        <div className="text-center flex-1 flex flex-col justify-center items-center mt-20">
+          <div className="bg-blue-primary rounded-[24px] p-8 mb-8 inline-block">
+            <Camera className="w-16 h-16 text-white mx-auto" />
+          </div>
+          <h1 className="text-2xl text-shadow-md  font-bold text- mb-8">
             ให้สิทธิการใช้งานกล้อง
           </h1>
 
-          <div className="text-2xl text-gray-700 mb-16 leading-relaxed">
+          <div className="text-xl text-gray-700 mb-16 leading-relaxed">
             เพื่อให้สามารถสแกนและเปิดได้
             <br />
             ระบบต้องเข้าถึงกล้องของคุณ
-          </div>
-
-          <div className="">
-            <div className="bg-blue-primary rounded-[24px] p-8 mb-8 inline-block">
-              <Camera className="w-16 h-16 text-white mx-auto" />
-            </div>
           </div>
 
           <input
@@ -183,23 +193,14 @@ function ScanMethodScreen() {
             accept="image/*"
             className="hidden"
           />
-          <>
-            <div className="space-y-6 flex items-center justify-center flex-col m-auto w-full">
-              <button
-                onClick={handleFileSelect}
-                className="bg-primary text-white px-8 py-2 rounded-[24px] text-2xl font-medium w-full cursor-pointer"
-              >
-                อนุญาต
-              </button>
-
-              {/* <button
-              onClick={() => setCurrentScreen("steps")}
-              className="text-gray-600 text-base"
+          <div className="space-y-6 flex items-center justify-center flex-col m-auto w-full">
+            <button
+              onClick={handleFileSelect}
+              className="bg-primary text-white px-8 py-3 rounded-[24px] text-xl font-medium w-full cursor-pointer"
             >
-              ภายหลัง
-            </button> */}
-            </div>
-          </>
+              อนุญาต
+            </button>
+          </div>
         </div>
       )}
     </div>
