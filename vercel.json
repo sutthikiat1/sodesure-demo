@@ -4,7 +4,10 @@
       "source": "/api/(.*)",
       "destination": "https://sodsureml-production.up.railway.app/$1"
     },
-    { "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }] }
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
   ],
   "headers": [
     {
