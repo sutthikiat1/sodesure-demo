@@ -1,4 +1,4 @@
-import logo from "../../assets/logo-sodsurev2.png";
+import logo from "../../assets/logo.png";
 
 const Loading = () => {
   return (
@@ -155,9 +155,7 @@ const Loading = () => {
 
         {/* Loading text with bouncing dots */}
         <div className="flex flex-col items-center gap-2">
-          <p className="text-lg font-medium shimmer-text">
-            กำลังวิเคราะห์
-          </p>
+          <p className="text-lg font-medium shimmer-text">กำลังวิเคราะห์</p>
 
           {/* Bouncing dots */}
           <div className="flex gap-1.5">
