@@ -9,9 +9,130 @@ import {
   Camera,
   ScanLine,
   History,
+  Sparkles,
 } from "lucide-react";
 import type { HistoryItem } from "../../../AppContext";
 import { useNavigate } from "react-router-dom";
+
+// Animation styles for Hero Section
+const heroAnimationStyles = `
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes pulse-ring-hero {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse-ring-hero-delay {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes shimmer-gradient {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  @keyframes rotate-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes sparkle {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0) rotate(0deg);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1) rotate(180deg);
+    }
+  }
+
+  @keyframes bounce-subtle {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  .hero-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .hero-pulse-ring {
+    animation: pulse-ring-hero 2s ease-out infinite;
+  }
+
+  .hero-pulse-ring-delay {
+    animation: pulse-ring-hero-delay 2s ease-out infinite;
+    animation-delay: 0.5s;
+  }
+
+  .hero-shimmer-btn {
+    background: linear-gradient(
+      90deg,
+      #2F7A59 0%,
+      #3d9970 25%,
+      #2F7A59 50%,
+      #3d9970 75%,
+      #2F7A59 100%
+    );
+    background-size: 200% auto;
+    animation: shimmer-gradient 3s linear infinite;
+  }
+
+  .hero-rotate {
+    animation: rotate-slow 20s linear infinite;
+  }
+
+  .hero-sparkle-1 {
+    animation: sparkle 2s ease-in-out infinite;
+  }
+
+  .hero-sparkle-2 {
+    animation: sparkle 2s ease-in-out infinite;
+    animation-delay: 0.7s;
+  }
+
+  .hero-sparkle-3 {
+    animation: sparkle 2s ease-in-out infinite;
+    animation-delay: 1.4s;
+  }
+
+  .hero-bounce {
+    animation: bounce-subtle 2s ease-in-out infinite;
+  }
+`;
 
 const index = () => {
   const { scanHistory, setCurrentScreen } = useAppContext();
@@ -69,54 +190,74 @@ const index = () => {
           : "สวัสดีตอนเย็น";
 
     return (
-      <div className="px-4 mb-4">
-        <div className="mb-3">
-          <h1 className="text-2xl font-bold text-gray-800">
-            {greeting}!
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">
-            พร้อมที่จะตรวจสอบความสดของเนื้อแล้วหรือยัง?
-          </p>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-md p-4 border border-gray-100">
-          {/* Icon and Graphics */}
-          <div className="relative mb-4 flex justify-center">
-            <div className="relative">
-              {/* Main Circle */}
-              <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center shadow-lg">
-                <Camera className="w-10 h-10 text-white" />
-              </div>
-            </div>
+      <>
+        <style>{heroAnimationStyles}</style>
+        <div className="px-4 mb-4">
+          <div className="mb-3">
+            <h1 className="text-2xl font-bold text-gray-800">{greeting}!</h1>
+            <p className="text-gray-500 text-sm mt-1">
+              พร้อมที่จะตรวจสอบความสดของเนื้อแล้วหรือยัง?
+            </p>
           </div>
 
-          {/* Title */}
-          <h3 className="text-lg font-bold text-gray-800 text-center mb-1">
-            ตรวจสอบความสดของเนื้อหมู
-          </h3>
+          <div className="bg-gradient-to-br from-white via-green-50/30 to-white rounded-3xl shadow-lg p-5 border border-green-100/50 relative overflow-hidden">
+            {/* Decorative background circle */}
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/5 rounded-full hero-rotate" />
+            <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-primary/5 rounded-full" />
 
-          {/* Description */}
-          <p className="text-xs text-gray-500 text-center mb-4">
-            AI สแกนและตรวจสอบระดับความสดได้ทันที
-          </p>
+            {/* Icon and Graphics */}
+            <div className="relative mb-5 flex justify-center">
+              <div className="relative hero-float">
+                {/* Pulsing rings */}
+                <div className="absolute inset-0 w-24 h-24 -m-2 rounded-full border-2 border-primary/30 hero-pulse-ring" />
+                <div className="absolute inset-0 w-24 h-24 -m-2 rounded-full border border-primary/20 hero-pulse-ring-delay" />
 
-          {/* Start Scan Button */}
-          <button
-            onClick={() => {
-              navigate("/scan");
-            }}
-            className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-full transition-colors flex items-center justify-center gap-2 shadow-md"
-          >
-            <ScanLine className="w-5 h-5" />
-            <span>เริ่มสแกน</span>
-          </button>
+                {/* Main Circle */}
+                <div className="relative w-20 h-20 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-xl shadow-primary/30">
+                  <Camera className="w-10 h-10 text-white" />
+                </div>
 
-          {/* Footer Note */}
-          <p className="text-xs text-gray-400 text-center mt-3">
-            AI คาดการณ์ • ตรวจสอบด้วยสายตาเพิ่มเติม
-          </p>
+                {/* Sparkle decorations */}
+                <div className="absolute -top-1 -right-1 hero-sparkle-1">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                </div>
+                <div className="absolute -bottom-1 -left-2 hero-sparkle-2">
+                  <Sparkles className="w-3 h-3 text-primary" />
+                </div>
+                <div className="absolute top-1/2 -right-4 hero-sparkle-3">
+                  <Sparkles className="w-3 h-3 text-amber-400" />
+                </div>
+              </div>
+            </div>
+
+            {/* Title */}
+            <h3 className="text-lg font-bold text-gray-800 text-center mb-1">
+              ตรวจสอบความสดของเนื้อหมู
+            </h3>
+
+            {/* Description */}
+            <p className="text-xs text-gray-500 text-center mb-5">
+              AI สแกนและตรวจสอบระดับความสดได้ทันที
+            </p>
+
+            {/* Start Scan Button with shimmer */}
+            <button
+              onClick={() => {
+                navigate("/scan");
+              }}
+              className="w-full hero-shimmer-btn text-white font-semibold py-3.5 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/25 active:scale-[0.98] hero-bounce"
+            >
+              <ScanLine className="w-5 h-5" />
+              <span>เริ่มสแกน</span>
+            </button>
+
+            {/* Footer Note */}
+            <p className="text-xs text-gray-400 text-center mt-4">
+              AI คาดการณ์ • ตรวจสอบด้วยสายตาเพิ่มเติม
+            </p>
+          </div>
         </div>
-      </div>
+      </>
     );
   };
 
