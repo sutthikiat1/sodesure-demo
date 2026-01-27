@@ -1,14 +1,11 @@
 import { Calendar, Trash2, Trash } from "lucide-react";
 import { useAppContext } from "../../../AppContext";
 import type { HistoryItem } from "../../../AppContext";
+import { useNavigate } from "react-router-dom";
 
 function ScanHistoryScreen() {
-  const { setCurrentScreen, scanHistory, deleteScanHistory, clearAllHistory } =
-    useAppContext();
-
-  console.log("📜 Current Scan History:", scanHistory);
-  console.log("📊 History length:", scanHistory.length);
-
+  const { scanHistory, deleteScanHistory, clearAllHistory } = useAppContext();
+  const navigate = useNavigate();
   const getDateSection = (date: Date): string => {
     const today = new Date();
     const yesterday = new Date(today);
@@ -96,7 +93,7 @@ function ScanHistoryScreen() {
               เริ่มสแกนเนื้อของคุณเพื่อดูประวัติที่นี่
             </p>
             <button
-              onClick={() => setCurrentScreen("welcome")}
+              onClick={() => navigate("/scan")}
               className="bg-primary text-white px-6 py-3 rounded-[24px] font-medium hover:bg-primary/90 transition-colors"
             >
               เริ่มสแกน

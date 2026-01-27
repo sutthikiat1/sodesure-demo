@@ -12,7 +12,7 @@ const Navbar = () => {
         }}
         src={LOGO}
         alt=""
-        className="w-fit h-[50px] cursor-pointer"
+        className="h-[50px] cursor-pointer"
       />
       <img src={AXONSLOGO} alt="" className="w-fit h-[55px]" />
     </div>
