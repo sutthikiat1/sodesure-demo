@@ -1,21 +1,23 @@
-import LOGO from "../../assets/logo.png"; // Adjust the path as necessary
-import AXONSLOGO from "../../assets/axons.svg";
+import LOGO from "../../assets/logo-sodsurev2.png";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
+
   return (
-    <div className="w-full bg-slate-100 shadow-2xl shadow-gray-300 fixed top-0 left-0 right-0 min-h-[70px] justify-between flex px-4 items-center gap-4 z-50">
-      <img
-        onClick={() => {
-          navigate("/");
-        }}
-        src={LOGO}
-        alt=""
-        className="h-[50px] cursor-pointer"
-      />
-      <img src={AXONSLOGO} alt="" className="w-fit h-[55px]" />
-    </div>
+    <nav className="w-full bg-white/80 backdrop-blur-md border-b border-gray-100 fixed top-0 left-0 right-0 h-[70px] flex items-center px-4 z-50 shadow-sm">
+      {/* Main Logo - Centered or Left */}
+      <div
+        onClick={() => navigate("/")}
+        className="cursor-pointer flex items-center"
+      >
+        <img
+          src={LOGO}
+          alt="SODSure Logo"
+          className="h-[42px] object-contain"
+        />
+      </div>
+    </nav>
   );
 };
 

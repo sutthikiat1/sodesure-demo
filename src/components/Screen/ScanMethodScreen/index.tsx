@@ -1,4 +1,12 @@
-import { Camera, BadgeAlert, BadgeX, BadgeCheck, Store } from "lucide-react";
+import {
+  Camera,
+  BadgeAlert,
+  BadgeX,
+  BadgeCheck,
+  Store,
+  ImagePlus,
+  RefreshCw,
+} from "lucide-react";
 import { useAppContext } from "../../../AppContext";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,11 +30,11 @@ function ScanMethodScreen() {
 
   const bgColorFromPredictClass = (intense?: boolean) => {
     if (scanResult?.predicted_class === "fresh") {
-      return intense ? "bg-primary" : "bg-green-50";
+      return intense ? "bg-primary" : "bg-gradient-to-b from-green-50 to-white";
     } else if (scanResult?.predicted_class === "rotten") {
-      return intense ? "bg-yellow-600" : "bg-yellow-50";
+      return intense ? "bg-amber-500" : "bg-gradient-to-b from-amber-50 to-white";
     } else if (scanResult?.predicted_class === "Invalid (Non-Meat)") {
-      return intense ? "bg-red-600" : "bg-red-50";
+      return intense ? "bg-red-500" : "bg-gradient-to-b from-red-50 to-white";
     } else {
       return "bg-white";
     }
@@ -36,7 +44,7 @@ function ScanMethodScreen() {
     if (scanResult?.predicted_class === "fresh") {
       return "text-primary";
     } else if (scanResult?.predicted_class === "rotten") {
-      return "text-yellow-600";
+      return "text-amber-600";
     } else if (scanResult?.predicted_class === "Invalid (Non-Meat)") {
       return "text-red-600";
     } else {
@@ -46,11 +54,11 @@ function ScanMethodScreen() {
 
   const getIconFromPredictClass = () => {
     if (scanResult?.predicted_class === "fresh") {
-      return <BadgeCheck className="text-white" />;
+      return <BadgeCheck className="w-5 h-5 text-white" />;
     } else if (scanResult?.predicted_class === "rotten") {
-      return <BadgeAlert className="text-white" />;
+      return <BadgeAlert className="w-5 h-5 text-white" />;
     } else if (scanResult?.predicted_class === "Invalid (Non-Meat)") {
-      return <BadgeX className="text-white" />;
+      return <BadgeX className="w-5 h-5 text-white" />;
     }
   };
 
@@ -71,7 +79,7 @@ function ScanMethodScreen() {
       if (scanResult?.confidence >= 0.8) {
         return "text-green-600";
       } else if (scanResult.confidence >= 0.5) {
-        return "text-yellow-600";
+        return "text-amber-600";
       } else if (scanResult.confidence < 0.5) {
         return "text-red-600";
       }
@@ -81,11 +89,11 @@ function ScanMethodScreen() {
   const getBgColorPercent = () => {
     if (scanResult?.confidence) {
       if (scanResult?.confidence >= 0.8) {
-        return "bg-green-600";
+        return "bg-gradient-to-r from-green-500 to-green-400";
       } else if (scanResult.confidence >= 0.4) {
-        return "bg-yellow-600";
+        return "bg-gradient-to-r from-amber-500 to-amber-400";
       } else if (scanResult.confidence < 0.4) {
-        return "bg-red-600";
+        return "bg-gradient-to-r from-red-500 to-red-400";
       }
     }
   };
@@ -105,96 +113,131 @@ function ScanMethodScreen() {
   }, []);
 
   return (
-    <div className={`p-4 min-h-dvh my-18 ${bgColorFromPredictClass()}`}>
+    <div className={`p-4 min-h-dvh mt-18 pb-24 ${bgColorFromPredictClass()}`}>
+      {/* ========== RESULT STATE ========== */}
       {!isScanLoading && scanResult && (
-        <div className="flex flex-col mt-4 gap-5">
-          <h1 className="text-lg font-semibold text-gray-600 flex gap-2 justify-center">
-            ผลการประเมิน:{""}
-            <span className={textColorFromPredictClass()}>
+        <div className="flex flex-col gap-5 animate-fade-in">
+          {/* Header */}
+          <div className="text-center">
+            <h1 className="text-xl font-bold text-gray-800 mb-1">
+              ผลการประเมิน
+            </h1>
+            <p className={`text-2xl font-bold ${textColorFromPredictClass()}`}>
               {getTextFromPredictClass()}
-            </span>
-          </h1>
-          <img
-            alt={"scan-result-img"}
-            src={selectedImage as string}
-            className="max-h-[320px] object-cover rounded-3xl shadow-md "
-          />
-          <div className="drop-shadow-md bg-white rounded-3xl p-6 w-full left-0 flex flex-col gap-4 relative">
+            </p>
+          </div>
+
+          {/* Image with badge */}
+          <div className="relative">
+            <img
+              alt="scan-result"
+              src={selectedImage as string}
+              className="w-full max-h-[280px] object-cover rounded-3xl shadow-lg"
+            />
+            {/* Status Badge on image */}
             <div
-              className={`${bgColorFromPredictClass(
+              className={`absolute -bottom-4 left-1/2 -translate-x-1/2 ${bgColorFromPredictClass(
                 true
-              )} rounded-full  border-3 border-white text-center -top-10 px-4 py-2 absolute left-1/2 -translate-x-1/2 z-10`}
+              )} rounded-full px-5 py-2 shadow-lg border-4 border-white`}
             >
-              <span className="text-white text-lg inline-flex items-center gap-2">
+              <span className="text-white text-base font-semibold inline-flex items-center gap-2">
                 {getIconFromPredictClass()}
                 {getTextFromPredictClass(true)}
               </span>
             </div>
-            <div className="flex flex-col gap-4 text-gray-600">
-              <div className="flex justify-between w-full">
-                <span>ระดับความเชื่อมั่น (AI Confidence)</span>
-                <span className={getTextColorPercent()}>
+          </div>
+
+          {/* Result Card */}
+          <div className="bg-white rounded-3xl shadow-md p-5 mt-2">
+            {/* Confidence */}
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-gray-600 text-sm">
+                  ระดับความเชื่อมั่น (AI Confidence)
+                </span>
+                <span className={`font-bold text-lg ${getTextColorPercent()}`}>
                   {scanResult
                     ? (scanResult.confidence * 100).toFixed(0) + "%"
                     : "N/A"}
                 </span>
               </div>
-              <div className="relative w-full bg-gray-200 h-4 rounded-full">
+              {/* Progress bar */}
+              <div className="relative w-full bg-gray-100 h-3 rounded-full overflow-hidden">
                 <div
-                  className={`absolute ${getBgColorPercent()} h-4 rounded-full`}
-                  style={{ width: `${(scanResult?.confidence ?? 0) * 100}%` }}
-                ></div>
-              </div>
-              <div className="h-[0.5px] w-full bg-gray-200 "></div>
-              <div className="text-lg text-center w-full">
-                {getDescriptionFromPredictClass()}
+                  className={`absolute ${getBgColorPercent()} h-3 rounded-full transition-all duration-1000 ease-out`}
+                  style={{
+                    width: `${(scanResult?.confidence ?? 0) * 100}%`,
+                  }}
+                />
               </div>
             </div>
+
+            {/* Divider */}
+            <div className="h-px w-full bg-gray-100 my-4" />
+
+            {/* Description */}
+            <p className="text-center text-gray-700">
+              {getDescriptionFromPredictClass()}
+            </p>
           </div>
-          <div
-            onClick={resetStateScan}
-            className="rounded-3xl text-gray-600 w-full bg-white shadow-md px-6 py-4 flex gap-4"
-          >
-            <Camera />
-            <span>Scan อีกครั้ง</span>
-          </div>
-          {scanResult?.predicted_class !== "fresh" && (
-            <div
-              onClick={() => navigate("/nearby")}
-              className="rounded-3xl text-gray-600 w-full bg-white shadow-md px-6 py-4 flex gap-4"
+
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={resetStateScan}
+              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-4 px-6 rounded-2xl shadow-md transition-all duration-200 flex items-center justify-center gap-3 active:scale-[0.98]"
             >
-              <Store />
-              <span>ค้นหาร้านค้าใกล้ฉัน</span>
-            </div>
-          )}
+              <RefreshCw className="w-5 h-5" />
+              <span>สแกนอีกครั้ง</span>
+            </button>
+
+            {scanResult?.predicted_class !== "fresh" && (
+              <button
+                onClick={() => navigate("/nearby")}
+                className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-4 px-6 rounded-2xl shadow-md transition-all duration-200 flex items-center justify-center gap-3 active:scale-[0.98]"
+              >
+                <Store className="w-5 h-5" />
+                <span>ค้นหาร้านค้าใกล้ฉัน</span>
+              </button>
+            )}
+          </div>
         </div>
       )}
 
+      {/* ========== LOADING STATE ========== */}
       {isScanLoading && !scanResult && (
-        <div className="flex items-center justify-center flex-col mt-24 gap-10">
+        <div className="flex items-center justify-center min-h-[70vh]">
           <Loading />
-          <span className="text-lg text-gray-600 text-center">
-            กรุณารอสักครู่
-            <br></br>
-            กำลังประมวลผลภาพถ่ายของคุณ..
-          </span>
         </div>
       )}
+
+      {/* ========== PERMISSION/UPLOAD STATE ========== */}
       {!isScanLoading && !scanResult && (
-        <div className="text-center flex-1 flex flex-col justify-center items-center mt-20">
-          <div className="bg-blue-primary rounded-4xl p-8 mb-8 inline-block">
-            <Camera className="w-16 h-16 text-white mx-auto" />
+        <div className="flex flex-col items-center justify-center min-h-[70vh] text-center px-4">
+          {/* Icon */}
+          <div className="relative mb-6">
+            <div className="w-28 h-28 bg-gradient-to-br from-primary to-primary/80 rounded-3xl flex items-center justify-center shadow-lg">
+              <Camera className="w-14 h-14 text-white" />
+            </div>
+            {/* Decorative elements */}
+            <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+              <ImagePlus className="w-4 h-4 text-primary" />
+            </div>
           </div>
-          <h1 className="text-2xl text-shadow-md  font-bold text- mb-8">
-            ให้สิทธิการใช้งานกล้อง
+
+          {/* Title */}
+          <h1 className="text-2xl font-bold text-gray-800 mb-3">
+            เริ่มสแกนเนื้อของคุณ
           </h1>
 
-          <div className="text-xl text-gray-700 mb-8 leading-relaxed">
-            เพื่อให้สามารถสแกนและเปิดได้
+          {/* Description */}
+          <p className="text-gray-500 mb-8 leading-relaxed max-w-xs">
+            ถ่ายภาพหรือเลือกภาพจากอัลบั้ม
             <br />
-            ระบบต้องเข้าถึงกล้องของคุณ
-          </div>
+            เพื่อให้ AI ตรวจสอบความสดของเนื้อ
+          </p>
 
+          {/* Hidden file input */}
           <input
             type="file"
             ref={fileInputRef}
@@ -202,14 +245,20 @@ function ScanMethodScreen() {
             accept="image/*"
             className="hidden"
           />
-          <div className="space-y-6 flex items-center justify-center flex-col m-auto w-full">
-            <button
-              onClick={handleFileSelect}
-              className="bg-primary text-white px-8 py-3 rounded-xl text-xl font-medium w-full cursor-pointer"
-            >
-              อนุญาต
-            </button>
-          </div>
+
+          {/* Upload Button */}
+          <button
+            onClick={handleFileSelect}
+            className="w-full max-w-xs bg-primary hover:bg-primary/90 text-white font-semibold py-4 px-8 rounded-2xl shadow-lg transition-all duration-200 flex items-center justify-center gap-3 active:scale-[0.98]"
+          >
+            <Camera className="w-5 h-5" />
+            <span>เลือกภาพหรือถ่ายรูป</span>
+          </button>
+
+          {/* Hint */}
+          <p className="text-xs text-gray-400 mt-4">
+            รองรับไฟล์ภาพ JPG, PNG
+          </p>
         </div>
       )}
     </div>
