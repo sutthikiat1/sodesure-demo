@@ -2,6 +2,7 @@ import { Camera, BadgeAlert, BadgeX, BadgeCheck, Store } from "lucide-react";
 import { useAppContext } from "../../../AppContext";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../Layout/Loading";
 
 function ScanMethodScreen() {
   const {
@@ -122,7 +123,7 @@ function ScanMethodScreen() {
             <div
               className={`${bgColorFromPredictClass(
                 true
-              )} rounded-full border-3 border-white text-center -top-10 px-4 py-2 absolute left-1/2 -translate-x-1/2 z-10`}
+              )} rounded-full  border-3 border-white text-center -top-10 px-4 py-2 absolute left-1/2 -translate-x-1/2 z-10`}
             >
               <span className="text-white text-lg inline-flex items-center gap-2">
                 {getIconFromPredictClass()}
@@ -170,10 +171,13 @@ function ScanMethodScreen() {
       )}
 
       {isScanLoading && !scanResult && (
-        <div className="text-2xl text-gray-700 mb-16 leading-relaxed">
-          กำลังประมวลผลภาพถ่ายของคุณ...
-          <br />
-          กรุณารอสักครู่
+        <div className="flex items-center justify-center flex-col mt-24 gap-10">
+          <Loading />
+          <span className="text-lg text-gray-600 text-center">
+            กรุณารอสักครู่
+            <br></br>
+            กำลังประมวลผลภาพถ่ายของคุณ..
+          </span>
         </div>
       )}
       {!isScanLoading && !scanResult && (
