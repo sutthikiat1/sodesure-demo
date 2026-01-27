@@ -133,119 +133,6 @@ const animationStyles = `
     animation: rotate-bg 20s linear infinite;
   }
 
-  /* ===== Result State Animations ===== */
-  @keyframes shimmer-bg {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% {
-      opacity: 0.4;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.7;
-      transform: scale(1.02);
-    }
-  }
-
-  @keyframes badge-bounce {
-    0%, 100% {
-      transform: translateX(-50%) scale(1);
-    }
-    50% {
-      transform: translateX(-50%) scale(1.05);
-    }
-  }
-
-  @keyframes icon-pulse {
-    0%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.2);
-    }
-  }
-
-  @keyframes ring-pulse {
-    0% {
-      transform: scale(0.95);
-      opacity: 0.8;
-    }
-    50% {
-      transform: scale(1.05);
-      opacity: 0.4;
-    }
-    100% {
-      transform: scale(0.95);
-      opacity: 0.8;
-    }
-  }
-
-  .shimmer-fresh {
-    background: linear-gradient(
-      90deg,
-      rgba(34, 197, 94, 0.1) 0%,
-      rgba(34, 197, 94, 0.4) 50%,
-      rgba(34, 197, 94, 0.1) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer-bg 2.5s ease-in-out infinite;
-  }
-
-  .shimmer-rotten {
-    background: linear-gradient(
-      90deg,
-      rgba(245, 158, 11, 0.1) 0%,
-      rgba(245, 158, 11, 0.4) 50%,
-      rgba(245, 158, 11, 0.1) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer-bg 2.5s ease-in-out infinite;
-  }
-
-  .shimmer-invalid {
-    background: linear-gradient(
-      90deg,
-      rgba(239, 68, 68, 0.1) 0%,
-      rgba(239, 68, 68, 0.4) 50%,
-      rgba(239, 68, 68, 0.1) 100%
-    );
-    background-size: 200% 100%;
-    animation: shimmer-bg 2.5s ease-in-out infinite;
-  }
-
-  .glow-fresh {
-    box-shadow: 0 0 30px rgba(34, 197, 94, 0.4), 0 0 60px rgba(34, 197, 94, 0.2);
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  .glow-rotten {
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.4), 0 0 60px rgba(245, 158, 11, 0.2);
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  .glow-invalid {
-    box-shadow: 0 0 30px rgba(239, 68, 68, 0.4), 0 0 60px rgba(239, 68, 68, 0.2);
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  .badge-animate {
-    animation: badge-bounce 2s ease-in-out infinite;
-  }
-
-  .icon-animate {
-    animation: icon-pulse 1.5s ease-in-out infinite;
-  }
-
-  .ring-animate {
-    animation: ring-pulse 2s ease-in-out infinite;
-  }
 `;
 
 function ScanMethodScreen() {
@@ -259,19 +146,6 @@ function ScanMethodScreen() {
   } = useAppContext();
 
   const navigate = useNavigate();
-
-  // Animation class helpers
-  const getShimmerClass = () => {
-    if (scanResult?.predicted_class === "fresh") return "shimmer-fresh";
-    if (scanResult?.predicted_class === "rotten") return "shimmer-rotten";
-    return "shimmer-invalid";
-  };
-
-  const getGlowClass = () => {
-    if (scanResult?.predicted_class === "fresh") return "glow-fresh";
-    if (scanResult?.predicted_class === "rotten") return "glow-rotten";
-    return "glow-invalid";
-  };
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -378,34 +252,24 @@ function ScanMethodScreen() {
               </p>
             </div>
 
-            {/* Image with badge and animated background */}
+            {/* Image with badge */}
             <div className="relative">
-              {/* Animated shimmer background */}
-              <div
-                className={`absolute -inset-3 rounded-[32px] ${getShimmerClass()}`}
-              />
-              {/* Animated glow ring */}
-              <div
-                className={`absolute -inset-1.5 rounded-[28px] ring-animate ${getGlowClass()}`}
-              />
               {/* Image container */}
-              <div
-                className={`relative w-full aspect-4/3 rounded-3xl overflow-hidden shadow-xl bg-gray-100 ${getGlowClass()}`}
-              >
+              <div className="relative w-full aspect-4/3 rounded-3xl overflow-hidden shadow-lg bg-gray-100 border border-gray-200">
                 <img
                   alt="scan-result"
                   src={selectedImage as string}
                   className="w-full h-full object-cover"
                 />
               </div>
-              {/* Status Badge with animation */}
+              {/* Status Badge */}
               <div
-                className={`absolute -bottom-4 left-1/2 badge-animate ${bgColorFromPredictClass(
+                className={`absolute -bottom-4 left-1/2 -translate-x-1/2 ${bgColorFromPredictClass(
                   true
                 )} rounded-full px-5 py-2 shadow-lg border-4 border-white`}
               >
                 <span className="text-white text-base font-semibold inline-flex items-center gap-2">
-                  <span className="icon-animate inline-flex">
+                  <span className="inline-flex">
                     {getIconFromPredictClass()}
                   </span>
                   {getTextFromPredictClass(true)}
