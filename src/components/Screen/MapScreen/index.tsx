@@ -3,14 +3,130 @@ import {
   useLoadScript,
   GoogleMap,
   Marker,
-  InfoWindow,
   OverlayView,
 } from "@react-google-maps/api";
-import { MapPin, Plus, Minus } from "lucide-react";
+import {
+  MapPin,
+  Plus,
+  Minus,
+  Star,
+  MapPinned,
+  Navigation,
+  X,
+} from "lucide-react";
 import { useAppContext } from "../../../AppContext";
 import MakroLogo from "../../../assets/makrologo.png";
 import LotusLogo from "../../../assets/lotuslogo.png";
 import CPLogo from "../../../assets/cplogonont.png";
+
+// Animation styles for map pins
+const mapAnimationStyles = `
+  @keyframes bounce-pin {
+    0%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-8px);
+    }
+  }
+
+  @keyframes pulse-pin {
+    0% {
+      box-shadow: 0 0 0 0 rgba(47, 122, 89, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 15px rgba(47, 122, 89, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(47, 122, 89, 0);
+    }
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .pin-bounce {
+    animation: bounce-pin 2s ease-in-out infinite;
+  }
+
+  .pin-pulse {
+    animation: pulse-pin 2s ease-out infinite;
+  }
+
+  .pin-selected {
+    animation: bounce-pin 0.5s ease-out;
+  }
+
+  .info-window-animate {
+    animation: scale-in 0.2s ease-out;
+  }
+
+  .fade-in-up {
+    animation: fade-in-up 0.3s ease-out;
+  }
+
+  /* Store Card Animations */
+  @keyframes shimmer-skeleton {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  @keyframes slide-up-card {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      #f0f0f0 0%,
+      #e0e0e0 50%,
+      #f0f0f0 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer-skeleton 1.5s ease-in-out infinite;
+  }
+
+  .card-slide-up {
+    animation: slide-up-card 0.4s ease-out forwards;
+    opacity: 0;
+  }
+
+  .card-delay-1 { animation-delay: 0.05s; }
+  .card-delay-2 { animation-delay: 0.1s; }
+  .card-delay-3 { animation-delay: 0.15s; }
+  .card-delay-4 { animation-delay: 0.2s; }
+  .card-delay-5 { animation-delay: 0.25s; }
+`;
 
 const mapContainerStyle = {
   height: "520px",
@@ -255,237 +371,153 @@ function MapScreen() {
   }
 
   return (
-    <div className="min-h-screen mx-auto bg-white flex flex-col">
-      {/* Map */}
-      <div className="flex-1 relative">
-        <div ref={mapContainerRef}>
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            mapContainerClassName="map-container"
-            center={userLocation || defaultCenter}
-            zoom={14}
-            onLoad={onMapLoad}
-            options={{
-              disableDefaultUI: true,
-              zoomControl: false,
-              streetViewControl: false,
-              mapTypeControl: false,
-              fullscreenControl: false,
-              clickableIcons: false,
-            }}
-          >
-            {/* User Location Marker */}
-            {userLocation && (
-              <Marker
-                position={userLocation}
-                icon={{
-                  path: google.maps.SymbolPath.CIRCLE,
-                  scale: 10,
-                  fillColor: "#4285F4",
-                  fillOpacity: 1,
-                  strokeColor: "#ffffff",
-                  strokeWeight: 3,
-                }}
-              />
-            )}
+    <>
+      <style>{mapAnimationStyles}</style>
+      <div className="min-h-screen mx-auto bg-white flex flex-col">
+        {/* Map */}
+        <div className="flex-1 relative">
+          <div ref={mapContainerRef}>
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              mapContainerClassName="map-container"
+              center={userLocation || defaultCenter}
+              zoom={14}
+              onLoad={onMapLoad}
+              onClick={() => setSelectedPlace(null)}
+              options={{
+                disableDefaultUI: true,
+                zoomControl: false,
+                streetViewControl: false,
+                mapTypeControl: false,
+                fullscreenControl: false,
+                clickableIcons: false,
+              }}
+            >
+              {/* User Location Marker */}
+              {userLocation && (
+                <Marker
+                  position={userLocation}
+                  icon={{
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 10,
+                    fillColor: "#4285F4",
+                    fillOpacity: 1,
+                    strokeColor: "#ffffff",
+                    strokeWeight: 3,
+                  }}
+                />
+              )}
 
-            {/* Store Markers */}
-            {places.map((place) => {
-              return (
-                <OverlayView
-                  key={place.id}
-                  position={place.position}
-                  mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                >
-                  <div
-                    onClick={() => setSelectedPlace(place)}
-                    className="cursor-pointer transform -translate-x-1/2 -translate-y-full flex justify-center flex-col w-fit"
+              {/* Store Markers with Animation */}
+              {places.map((place) => {
+                const isSelected = selectedPlace?.id === place.id;
+                return (
+                  <OverlayView
+                    key={place.id}
+                    position={place.position}
+                    mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                   >
-                    {findLogoLocation(place) ? (
-                      // รูปภาพแบบวงกลมไม่มีพื้นหลัง
-                      <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-lg bg-transparent">
-                        <img
-                          src={findLogoLocation(place)}
-                          alt={place.name}
-                          className="w-full h-full object-cover"
+                    <div
+                      onClick={() => {
+                        setSelectedPlace(place);
+                        // Pan map to ensure modal is fully visible below navbar
+                        if (mapRef.current) {
+                          mapRef.current.panTo(place.position);
+                          // Pan up to show modal clearly (120px offset for modal + navbar)
+                          setTimeout(() => {
+                            mapRef.current?.panBy(0, -120);
+                          }, 100);
+                        }
+                      }}
+                      className={`cursor-pointer flex justify-center flex-col w-fit pin-bounce ${
+                        isSelected ? "z-50" : "z-10"
+                      }`}
+                      style={{ transform: "translateX(-50%)" }}
+                    >
+                      {/* Pin Container */}
+                      <div
+                        className={`relative ${isSelected ? "scale-125" : ""} transition-transform duration-200`}
+                      >
+                        {findLogoLocation(place) ? (
+                          <div
+                            className={`w-12 h-12 rounded-full overflow-hidden border-3 shadow-lg bg-white ${
+                              isSelected
+                                ? "border-primary pin-pulse"
+                                : "border-white"
+                            }`}
+                          >
+                            <img
+                              src={findLogoLocation(place)}
+                              alt={place.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            className={`w-12 h-12 bg-primary rounded-full flex items-center justify-center border-3 shadow-lg ${
+                              isSelected
+                                ? "border-primary/50 pin-pulse"
+                                : "border-white"
+                            }`}
+                          >
+                            <MapPin className="w-6 h-6 text-white" />
+                          </div>
+                        )}
+                        {/* Pointer */}
+                        <div
+                          className={`w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent mx-auto -mt-[2px] ${
+                            isSelected ? "border-t-primary" : "border-t-white"
+                          }`}
                         />
                       </div>
-                    ) : (
-                      // Default marker icon
-                      <div className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center border-2 border-white shadow-lg">
-                        <MapPin className="w-5 h-5 text-white" />
-                      </div>
-                    )}
-                    {/* หางของ marker */}
-                    <div className="w-0 h-0 border-l-[8px] border-r-[8px] border-t-[10px] border-l-transparent border-r-transparent border-t-white mx-auto -mt-[2px]" />
-                  </div>
-                </OverlayView>
-              );
-            })}
+                    </div>
+                  </OverlayView>
+                );
+              })}
 
-            {/* Info Window */}
-            {selectedPlace && (
-              <InfoWindow
-                position={selectedPlace.position}
-                onCloseClick={() => setSelectedPlace(null)}
-              >
-                <div className="p-2">
-                  <div className="flex items-center gap-3 mb-3">
-                    <img
-                      src={findLogoLocation(selectedPlace)}
-                      alt={`${selectedPlace.name} logo`}
-                      width={40}
-                      height={40}
-                      className="rounded-full border-primary border-2 object-cover"
-                    />
-                    <h3 className="font-semibold text-gray-800 mb-1">
-                      {selectedPlace.name}
-                    </h3>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-2">
-                    {selectedPlace.address}
-                  </p>
-                  {selectedPlace.distance && (
-                    <p className="text-sm text-blue-600 mb-1">
-                      📍 {selectedPlace.distance} กม.
-                    </p>
-                  )}
-                  {selectedPlace.rating && (
-                    <p className="text-sm text-yellow-600">
-                      ⭐ {selectedPlace.rating.toFixed(1)}
-                    </p>
-                  )}
-                  <button
-                    onClick={() => {
-                      const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.position.lat},${selectedPlace.position.lng}`;
-                      window.open(url, "_blank");
+              {/* Modern Info Window */}
+              {selectedPlace && (
+                <OverlayView
+                  position={selectedPlace.position}
+                  mapPaneName={OverlayView.FLOAT_PANE}
+                >
+                  <div
+                    className="info-window-animate"
+                    style={{
+                      position: "absolute",
+                      left: "-140px",
+                      bottom: "30px",
                     }}
-                    className="mt-2 text-sm text-primary font-medium hover:underline"
                   >
-                    นำทาง
-                  </button>
-                </div>
-              </InfoWindow>
-            )}
+                    {/* Main Card */}
+                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden w-[280px] relative">
+                      {/* Header with gradient */}
+                      <div className="bg-gradient-to-r from-primary to-primary/80 px-4 py-3 relative">
+                        {/* Close button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedPlace(null);
+                          }}
+                          className="absolute top-2 right-2 w-7 h-7 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors"
+                        >
+                          <X className="w-4 h-4 text-white" />
+                        </button>
 
-            {/* Custom Zoom Controls */}
-            <div className="absolute bottom-[100px] right-[16px] flex h-[92px] w-[45px] flex-col items-center rounded-md bg-white shadow-md">
-              <button
-                onClick={handleZoomIn}
-                className="h-full w-[45px] cursor-pointer p-1 text-lg font-extrabold hover:bg-gray-100 rounded-t-md transition-colors"
-              >
-                <Plus className="w-6 h-6 mx-auto" />
-              </button>
-              <div className="h-[1px] w-[80%] bg-slate-200" />
-              <button
-                onClick={handleZoomOut}
-                className="h-full w-[45px] cursor-pointer p-1 text-lg font-extrabold hover:bg-gray-100 rounded-b-md transition-colors"
-              >
-                <Minus className="w-6 h-6 mx-auto" />
-              </button>
-            </div>
-          </GoogleMap>
-        </div>
-        {/* Store List */}
-        {(places?.length > 0 || isSearching) && (
-          <div
-            className={`
-                absolute left-0 right-0 rounded-t-3xl
-                transition-all duration-300 ease-in-out h-fit
-                ${isExpanded ? "" : ""}
-              `}
-          >
-            <div
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="w-full pt-2 flex justify-center cursor-pointer"
-            >
-              <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
-            </div>
-            <div className="p-4">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  ร้านค้าใกล้เคียง
-                </h2>
-                {!isSearching && (
-                  <span className="text-lg font-semibold text-gray-500 bg-gray-200 rounded-full px-3 py-1">
-                    {places.length}
-                  </span>
-                )}
-                {isSearching && (
-                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-primary"></div>
-                )}
-              </div>
-
-              {/* Store Cards or Skeleton */}
-              <div className="space-y-3 mb-20">
-                {isSearching ? (
-                  // Skeleton Loading
-                  <>
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="bg-white rounded-2xl shadow-md overflow-hidden animate-pulse"
-                      >
-                        <div className="flex gap-4 p-3">
-                          {/* Skeleton Image */}
-                          <div className="w-24 h-24 flex-shrink-0 rounded-xl bg-gray-200"></div>
-
-                          {/* Skeleton Info */}
-                          <div className="flex-1 min-w-0 space-y-3">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="h-5 bg-gray-200 rounded w-3/4"></div>
-                              <div className="h-6 bg-gray-200 rounded-full w-20"></div>
-                            </div>
-                            <div className="h-4 bg-gray-200 rounded w-full"></div>
-                            <div className="flex items-center gap-3">
-                              <div className="h-4 bg-gray-200 rounded w-16"></div>
-                              <div className="h-4 bg-gray-200 rounded w-16"></div>
-                            </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-11 h-11 rounded-xl overflow-hidden border-2 border-white/30 bg-white shrink-0">
+                            <img
+                              src={findLogoLocation(selectedPlace)}
+                              alt={selectedPlace.name}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                ) : (
-                  // Actual Store Cards
-                  places.map((place) => (
-                    <div
-                      key={place.id}
-                      onClick={() => {
-                        setIsExpanded(false);
-
-                        mapContainerRef.current?.scrollIntoView({
-                          behavior: "smooth",
-                          block: "start",
-                        });
-
-                        setTimeout(() => {
-                          mapRef.current?.panTo(place.position);
-                          mapRef.current?.setZoom(16);
-                          setSelectedPlace(place);
-                        }, 300);
-                      }}
-                      className="bg-white rounded-2xl shadow-md hover:shadow-lg cursor-pointer transition-shadow overflow-hidden"
-                    >
-                      <div className="flex gap-4 p-3">
-                        {/* Store Image */}
-                        <div className="w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100">
-                          <img
-                            src={findLogoLocation(place)}
-                            alt={place.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-
-                        {/* Store Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2 mb-1">
-                            <h3 className="font-bold text-gray-800 text-base">
-                              {place.name}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-white text-sm leading-tight line-clamp-1">
+                              {selectedPlace.name}
                             </h3>
-                            {isCertifiedStore(place) && (
-                              <span className="flex items-center gap-1 bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0">
+                            {isCertifiedStore(selectedPlace) && (
+                              <span className="inline-flex items-center gap-1 bg-white/20 text-white text-[10px] font-medium px-2 py-0.5 rounded-full mt-1">
                                 <svg
                                   className="w-3 h-3"
                                   fill="currentColor"
@@ -497,58 +529,254 @@ function MapScreen() {
                                     clipRule="evenodd"
                                   />
                                 </svg>
-                                CERTIFIED
+                                Certified
                               </span>
                             )}
                           </div>
+                        </div>
+                      </div>
 
-                          <p className="text-sm text-gray-500 mb-2 line-clamp-1">
-                            {place.address}
-                          </p>
+                      {/* Content */}
+                      <div className="p-3">
+                        {/* Address */}
+                        <p className="text-xs text-gray-600 mb-2 line-clamp-1">
+                          {selectedPlace.address}
+                        </p>
 
-                          {/* Rating and Distance */}
-                          <div className="flex items-center gap-3 text-sm">
-                            {place.rating && (
-                              <div className="flex items-center gap-1">
-                                <span className="text-yellow-500 text-base">
-                                  ★
-                                </span>
-                                <span className="font-semibold text-gray-700">
-                                  {place.rating.toFixed(1)}
-                                </span>
-                                <span className="text-gray-400">(120)</span>
+                        {/* Stats Row */}
+                        <div className="flex items-center gap-3 mb-3">
+                          {selectedPlace.rating && (
+                            <div className="flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg">
+                              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                              <span className="text-xs font-semibold text-amber-700">
+                                {selectedPlace.rating.toFixed(1)}
+                              </span>
+                            </div>
+                          )}
+                          {selectedPlace.distance && (
+                            <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-lg">
+                              <MapPinned className="w-3.5 h-3.5 text-blue-500" />
+                              <span className="text-xs font-semibold text-blue-700">
+                                {selectedPlace.distance} km
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Navigate Button */}
+                        <button
+                          onClick={() => {
+                            const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.position.lat},${selectedPlace.position.lng}`;
+                            window.open(url, "_blank");
+                          }}
+                          className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] text-sm"
+                        >
+                          <Navigation className="w-4 h-4" />
+                          <span>นำทาง</span>
+                        </button>
+                      </div>
+
+                      {/* Arrow pointer at bottom center of card */}
+                      <div
+                        className="absolute left-1/2 -bottom-2 -translate-x-1/2"
+                        style={{
+                          filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.08))",
+                        }}
+                      >
+                        <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white" />
+                      </div>
+                    </div>
+                  </div>
+                </OverlayView>
+              )}
+
+              {/* Custom Zoom Controls */}
+              <div className="absolute bottom-[100px] right-[16px] flex h-[92px] w-[45px] flex-col items-center rounded-md bg-white shadow-md">
+                <button
+                  onClick={handleZoomIn}
+                  className="h-full w-[45px] cursor-pointer p-1 text-lg font-extrabold hover:bg-gray-100 rounded-t-md transition-colors"
+                >
+                  <Plus className="w-6 h-6 mx-auto" />
+                </button>
+                <div className="h-[1px] w-[80%] bg-slate-200" />
+                <button
+                  onClick={handleZoomOut}
+                  className="h-full w-[45px] cursor-pointer p-1 text-lg font-extrabold hover:bg-gray-100 rounded-b-md transition-colors"
+                >
+                  <Minus className="w-6 h-6 mx-auto" />
+                </button>
+              </div>
+            </GoogleMap>
+          </div>
+          {/* Store List */}
+          {(places?.length > 0 || isSearching) && (
+            <div
+              className={`
+                absolute left-0 right-0 rounded-t-3xl
+                transition-all duration-300 ease-in-out h-fit
+                ${isExpanded ? "" : ""}
+              `}
+            >
+              <div
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="w-full pt-2 flex justify-center cursor-pointer"
+              >
+                <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+              </div>
+              <div className="p-4">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    ร้านค้าใกล้เคียง
+                  </h2>
+                  {!isSearching && (
+                    <span className="text-lg font-semibold text-gray-500 bg-gray-200 rounded-full px-3 py-1">
+                      {places.length}
+                    </span>
+                  )}
+                  {isSearching && (
+                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-primary"></div>
+                  )}
+                </div>
+
+                {/* Store Cards or Skeleton */}
+                <div className="space-y-3 mb-20">
+                  {isSearching ? (
+                    // Skeleton Loading - matching new card design
+                    <>
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100"
+                        >
+                          <div className="flex items-center gap-3 p-3">
+                            {/* Skeleton Logo */}
+                            <div className="w-14 h-14 shrink-0 rounded-xl skeleton-shimmer"></div>
+
+                            {/* Skeleton Info */}
+                            <div className="flex-1 min-w-0 space-y-2">
+                              <div className="h-4 skeleton-shimmer rounded-lg w-3/4"></div>
+                              <div className="h-3 skeleton-shimmer rounded-lg w-full"></div>
+                              <div className="flex items-center gap-2">
+                                <div className="h-5 skeleton-shimmer rounded-full w-14"></div>
+                                <div className="h-5 skeleton-shimmer rounded-full w-16"></div>
                               </div>
-                            )}
-                            {place.distance && (
-                              <div className="flex items-center gap-1 text-gray-600">
+                            </div>
+
+                            {/* Skeleton Arrow */}
+                            <div className="w-7 h-7 skeleton-shimmer rounded-full shrink-0"></div>
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    // Actual Store Cards with animation
+                    places.map((place, index) => (
+                      <div
+                        key={place.id}
+                        onClick={() => {
+                          setIsExpanded(false);
+
+                          mapContainerRef.current?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                          });
+
+                          setTimeout(() => {
+                            mapRef.current?.panTo(place.position);
+                            mapRef.current?.setZoom(16);
+                            setSelectedPlace(place);
+                          }, 300);
+                        }}
+                        className={`bg-white rounded-2xl shadow-sm hover:shadow-lg cursor-pointer transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary/30 active:scale-[0.98] card-slide-up card-delay-${Math.min(index + 1, 5)}`}
+                      >
+                        <div className="flex items-center gap-3 p-3">
+                          {/* Store Logo */}
+                          <div className="relative flex-shrink-0">
+                            <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-gray-100 shadow-sm flex items-center justify-center">
+                              <img
+                                src={findLogoLocation(place)}
+                                alt={place.name}
+                                className="w-12 h-12 object-contain"
+                              />
+                            </div>
+                            {/* Certified badge */}
+                            {isCertifiedStore(place) && (
+                              <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center shadow border-2 border-white">
                                 <svg
-                                  className="w-4 h-4"
+                                  className="w-2.5 h-2.5 text-white"
                                   fill="currentColor"
                                   viewBox="0 0 20 20"
                                 >
                                   <path
                                     fillRule="evenodd"
-                                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                     clipRule="evenodd"
                                   />
                                 </svg>
-                                <span className="font-medium">
-                                  {place.distance} km
-                                </span>
                               </div>
                             )}
                           </div>
+
+                          {/* Store Info */}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-gray-800 text-sm line-clamp-1 mb-0.5">
+                              {place.name}
+                            </h3>
+                            <p className="text-xs text-gray-500 line-clamp-1 mb-2">
+                              {place.address}
+                            </p>
+
+                            {/* Rating and Distance inline */}
+                            <div className="flex items-center gap-2">
+                              {place.rating && (
+                                <div className="flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded-full">
+                                  <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                                  <span className="font-medium text-amber-700 text-xs">
+                                    {place.rating.toFixed(1)}
+                                  </span>
+                                </div>
+                              )}
+                              {place.distance && (
+                                <div className="flex items-center gap-1 bg-blue-50 px-2 py-0.5 rounded-full">
+                                  <MapPinned className="w-3 h-3 text-blue-500" />
+                                  <span className="font-medium text-blue-700 text-xs">
+                                    {place.distance} km
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Arrow indicator */}
+                          <div className="flex-shrink-0">
+                            <div className="w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center">
+                              <svg
+                                className="w-3.5 h-3.5 text-gray-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2.5}
+                                  d="M9 5l7 7-7 7"
+                                />
+                              </svg>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
-                )}
+                    ))
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

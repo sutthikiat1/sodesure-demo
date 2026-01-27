@@ -253,7 +253,7 @@ const index = () => {
 
             {/* Footer Note */}
             <p className="text-xs text-gray-400 text-center mt-4">
-              AI คาดการณ์ • ตรวจสอบด้วยสายตาเพิ่มเติม
+              ผลวิเคราะห์โดย AI • แนะนำตรวจสอบด้วยตาประกอบ
             </p>
           </div>
         </div>
