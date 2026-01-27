@@ -10,7 +10,7 @@ import { MapPin, Plus, Minus } from "lucide-react";
 import { useAppContext } from "../../../AppContext";
 import MakroLogo from "../../../assets/makrologo.png";
 import LotusLogo from "../../../assets/lotuslogo.png";
-import CPLogo from "../../../assets/cplogo.png";
+import CPLogo from "../../../assets/cplogonont.png";
 
 const mapContainerStyle = {
   height: "520px",
@@ -413,7 +413,7 @@ function MapScreen() {
               </div>
 
               {/* Store Cards or Skeleton */}
-              <div className="space-y-3">
+              <div className="space-y-3 mb-20">
                 {isSearching ? (
                   // Skeleton Loading
                   <>
