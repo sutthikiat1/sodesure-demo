@@ -65,8 +65,8 @@ const index = () => {
       currentHour < 12
         ? "สวัสดีตอนเช้า"
         : currentHour < 18
-          ? "สวัสดีตอนบ่าย"
-          : "สวัสดีตอนเย็น";
+        ? "สวัสดีตอนบ่าย"
+        : "สวัสดีตอนเย็น";
 
     return (
       <div className="px-4 mb-4">
@@ -129,7 +129,7 @@ const index = () => {
           </h2>
           {scanHistory?.length > 0 && (
             <button
-              onClick={() => setCurrentScreen("history")}
+              onClick={() => navigate("/history")}
               className="text-blue-500 text-sm font-semibold hover:underline"
             >
               ดูทั้งหมด
@@ -163,8 +163,8 @@ const index = () => {
                 confidence >= 90
                   ? "bg-green-100 text-green-700"
                   : confidence >= 80
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-red-100 text-red-700";
+                  ? "bg-yellow-100 text-yellow-700"
+                  : "bg-red-100 text-red-700";
 
               return (
                 <div
