@@ -61,7 +61,7 @@ function MapScreen() {
         (error) => {
           console.error("Error getting location:", error);
           setUserLocation(defaultCenter);
-        },
+        }
       );
     } else {
       setUserLocation(defaultCenter);
@@ -100,7 +100,7 @@ function MapScreen() {
               if (place.place_id && place.geometry?.location && place.name) {
                 // Check if place already exists
                 const exists = allFoundPlaces.some(
-                  (p) => p.id === place.place_id,
+                  (p) => p.id === place.place_id
                 );
 
                 if (!exists) {
@@ -114,9 +114,9 @@ function MapScreen() {
                     google.maps.geometry.spherical.computeDistanceBetween(
                       new google.maps.LatLng(
                         userLocation.lat,
-                        userLocation.lng,
+                        userLocation.lng
                       ),
-                      new google.maps.LatLng(placePos.lat, placePos.lng),
+                      new google.maps.LatLng(placePos.lat, placePos.lng)
                     );
 
                   if (
@@ -142,7 +142,7 @@ function MapScreen() {
           if (completedSearches === searchTerms.length) {
             // Sort by distance
             const sortedPlaces = allFoundPlaces.sort(
-              (a, b) => (a.distance || 0) - (b.distance || 0),
+              (a, b) => (a.distance || 0) - (b.distance || 0)
             );
             setPlaces(sortedPlaces);
             setIsSearching(false);
@@ -150,7 +150,7 @@ function MapScreen() {
         });
       });
     }
-  }, [isMapLoaded, userLocation, isLoaded, isSearching]);
+  }, [isMapLoaded, userLocation, isLoaded]);
 
   const onMapLoad = useCallback((map: google.maps.Map) => {
     mapRef.current = map;
