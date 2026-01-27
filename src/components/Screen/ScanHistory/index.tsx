@@ -81,9 +81,9 @@ function ScanHistoryScreen() {
   };
 
   return (
-    <div className="min-h-screen max-w-[500px] mx-auto bg-gray-50 flex flex-col mt-18">
+    <div className="min-h-screen max-w-full mx-auto bg-gray-50 flex flex-col mt-18">
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-4">
+      <div className="flex-1 overflow-y-auto px-4 lg:px-8 py-4">
         {scanHistory.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center py-12">
             <div className="bg-gray-100 rounded-full p-6 mb-4">
