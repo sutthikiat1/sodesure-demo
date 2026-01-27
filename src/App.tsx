@@ -15,6 +15,7 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout/Layout.tsx";
 import MapScreen from "./components/Screen/MapScreen/index.tsx";
 import ScanHistoryScreen from "./components/Screen/ScanHistory/index.tsx";
+import RecommendationScreen from "./components/Screen/Recommendation/index.tsx";
 
 const App: React.FC = () => {
   return (
@@ -27,7 +28,14 @@ const App: React.FC = () => {
           </Layout>
         }
       />
-      <Route path="/guild" element={<Layout>guild</Layout>} />
+      <Route
+        path="/guild"
+        element={
+          <Layout>
+            <RecommendationScreen />
+          </Layout>
+        }
+      />
       <Route path="/scan" element={<Layout>scan</Layout>} />
       <Route
         path="/history"
