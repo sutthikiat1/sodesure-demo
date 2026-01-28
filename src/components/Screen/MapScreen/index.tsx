@@ -361,10 +361,45 @@ function MapScreen() {
 
   if (!isLoaded) {
     return (
-      <div className="flex items-center justify-center h-screen ">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">กำลังโหลดแผนที่...</p>
+      <div className="min-h-screen mx-auto bg-gray-100 flex flex-col">
+        {/* Skeleton Map */}
+        <div className="flex-1 relative overflow-hidden">
+          {/* Animated gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 animate-pulse" />
+
+          {/* Fake map grid lines */}
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-1/4 left-0 right-0 h-px bg-gray-400" />
+            <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-400" />
+            <div className="absolute top-3/4 left-0 right-0 h-px bg-gray-400" />
+            <div className="absolute left-1/4 top-0 bottom-0 w-px bg-gray-400" />
+            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-400" />
+            <div className="absolute left-3/4 top-0 bottom-0 w-px bg-gray-400" />
+          </div>
+
+          {/* Skeleton markers */}
+          <div className="absolute top-1/3 left-1/4 w-8 h-8 bg-gray-300 rounded-full animate-pulse" />
+          <div className="absolute top-1/2 left-1/2 w-10 h-10 bg-primary/30 rounded-full animate-pulse" />
+          <div className="absolute top-2/3 left-3/4 w-8 h-8 bg-gray-300 rounded-full animate-pulse" />
+          <div className="absolute top-1/4 left-2/3 w-8 h-8 bg-gray-300 rounded-full animate-pulse" />
+
+          {/* Loading indicator in center */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-lg flex items-center gap-3">
+              <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
+              <span className="text-gray-600 font-medium">กำลังโหลดแผนที่...</span>
+            </div>
+          </div>
+
+          {/* Skeleton zoom controls */}
+          <div className="absolute bottom-[100px] right-[16px] flex h-[92px] w-[45px] flex-col items-center rounded-md bg-white/50 shadow-md">
+            <div className="h-1/2 w-full flex items-center justify-center border-b border-gray-200">
+              <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
+            </div>
+            <div className="h-1/2 w-full flex items-center justify-center">
+              <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
+            </div>
+          </div>
         </div>
       </div>
     );
