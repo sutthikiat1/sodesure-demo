@@ -565,7 +565,7 @@ function MapScreen() {
 
                         {/* Navigate Button */}
                         <a
-                          href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.position.lat},${selectedPlace.position.lng}`}
+                          href={`https://maps.google.com/maps?daddr=${selectedPlace.position.lat},${selectedPlace.position.lng}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
