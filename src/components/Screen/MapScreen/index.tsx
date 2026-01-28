@@ -383,7 +383,7 @@ function MapScreen() {
               center={userLocation || defaultCenter}
               zoom={14}
               onLoad={onMapLoad}
-              onClick={() => setSelectedPlace(null)}
+              onClick={() => setTimeout(() => setSelectedPlace(null), 150)}
               options={{
                 disableDefaultUI: true,
                 zoomControl: false,
