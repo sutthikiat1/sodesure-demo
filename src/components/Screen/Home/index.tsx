@@ -409,22 +409,56 @@ const index = () => {
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           {tips.map((tip) => {
             const IconComponent = tip.icon;
+            const getGradientBg = () => {
+              if (tip.bgColor.includes("blue"))
+                return "from-white via-blue-50/40 to-white";
+              if (tip.bgColor.includes("red"))
+                return "from-white via-red-50/40 to-white";
+              if (tip.bgColor.includes("orange"))
+                return "from-white via-orange-50/40 to-white";
+              if (tip.bgColor.includes("green"))
+                return "from-white via-green-50/40 to-white";
+              return "from-white to-white";
+            };
+            const getBorderColor = () => {
+              if (tip.bgColor.includes("blue")) return "border-blue-100/50";
+              if (tip.bgColor.includes("red")) return "border-red-100/50";
+              if (tip.bgColor.includes("orange")) return "border-orange-100/50";
+              if (tip.bgColor.includes("green")) return "border-green-100/50";
+              return "border-gray-100";
+            };
+            const getDecoColor = () => {
+              if (tip.bgColor.includes("blue")) return "bg-blue-500/5";
+              if (tip.bgColor.includes("red")) return "bg-red-500/5";
+              if (tip.bgColor.includes("orange")) return "bg-orange-500/5";
+              if (tip.bgColor.includes("green")) return "bg-green-500/5";
+              return "bg-gray-100/5";
+            };
             return (
               <div
                 key={tip.id}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 min-w-[280px] flex-shrink-0 hover:shadow-md transition-shadow"
+                className={`bg-gradient-to-br ${getGradientBg()} rounded-2xl shadow-sm border ${getBorderColor()} p-4 min-w-[260px] flex-shrink-0 hover:shadow-md transition-all relative overflow-hidden`}
               >
                 <div
-                  className={`w-12 h-12 ${tip.bgColor} rounded-xl flex items-center justify-center mb-3`}
-                >
-                  <IconComponent className={`w-6 h-6 ${tip.iconColor}`} />
+                  className={`absolute -top-6 -right-6 w-20 h-20 ${getDecoColor()} rounded-full`}
+                />
+                <div
+                  className={`absolute -bottom-4 -left-4 w-12 h-12 ${getDecoColor()} rounded-full`}
+                />
+
+                <div className="relative">
+                  <div
+                    className={`w-11 h-11 ${tip.bgColor} rounded-xl flex items-center justify-center mb-3 shadow-sm`}
+                  >
+                    <IconComponent className={`w-5 h-5 ${tip.iconColor}`} />
+                  </div>
+                  <h3 className="font-semibold text-gray-800 text-base mb-1.5">
+                    {tip.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    {tip.description}
+                  </p>
                 </div>
-                <h3 className="font-semibold text-gray-800 text-base mb-2">
-                  {tip.title}
-                </h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {tip.description}
-                </p>
               </div>
             );
           })}
