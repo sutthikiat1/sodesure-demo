@@ -383,7 +383,7 @@ function MapScreen() {
               center={userLocation || defaultCenter}
               zoom={14}
               onLoad={onMapLoad}
-              // onClick={() => setSelectedPlace(null)}
+              onClick={() => setSelectedPlace(null)}
               options={{
                 disableDefaultUI: true,
                 zoomControl: false,
@@ -483,6 +483,7 @@ function MapScreen() {
                 >
                   <div
                     className="info-window-animate"
+                    onClick={(e) => e.stopPropagation()}
                     style={{
                       position: "absolute",
                       left: "-140px",
