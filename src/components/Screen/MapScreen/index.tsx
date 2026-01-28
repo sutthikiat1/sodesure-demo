@@ -644,40 +644,39 @@ function MapScreen() {
               </div>
             </GoogleMap>
           </div>
-          {/* Store List */}
-          {(places?.length > 0 || isSearching) && (
+          {/* Store List - Always show, with skeleton when no data */}
+          <div
+            className={`
+              absolute left-0 right-0 rounded-t-3xl
+              transition-all duration-300 ease-in-out h-fit
+              ${isExpanded ? "" : ""}
+            `}
+          >
             <div
-              className={`
-                absolute left-0 right-0 rounded-t-3xl
-                transition-all duration-300 ease-in-out h-fit
-                ${isExpanded ? "" : ""}
-              `}
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="w-full pt-2 flex justify-center cursor-pointer"
             >
-              <div
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="w-full pt-2 flex justify-center cursor-pointer"
-              >
-                <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+              <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+            </div>
+            <div className="p-4">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  ร้านค้าใกล้เคียง
+                </h2>
+                {!isSearching && places.length > 0 && (
+                  <span className="text-lg font-semibold text-gray-500 bg-gray-200 rounded-full px-3 py-1">
+                    {places.length}
+                  </span>
+                )}
+                {(isSearching || places.length === 0) && (
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-primary"></div>
+                )}
               </div>
-              <div className="p-4">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    ร้านค้าใกล้เคียง
-                  </h2>
-                  {!isSearching && (
-                    <span className="text-lg font-semibold text-gray-500 bg-gray-200 rounded-full px-3 py-1">
-                      {places.length}
-                    </span>
-                  )}
-                  {isSearching && (
-                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-primary"></div>
-                  )}
-                </div>
 
-                {/* Store Cards or Skeleton */}
-                <div className="space-y-3 mb-20">
-                  {isSearching ? (
+              {/* Store Cards or Skeleton */}
+              <div className="space-y-3 mb-20">
+                {isSearching || places.length === 0 ? (
                     // Skeleton Loading - matching new card design
                     <>
                       {[1, 2, 3].map((i) => (
@@ -809,7 +808,6 @@ function MapScreen() {
                 </div>
               </div>
             </div>
-          )}
         </div>
       </div>
     </>
