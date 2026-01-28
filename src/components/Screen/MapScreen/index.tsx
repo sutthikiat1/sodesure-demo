@@ -564,16 +564,16 @@ function MapScreen() {
                         </div>
 
                         {/* Navigate Button */}
-                        <button
-                          onClick={() => {
-                            const url = `https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.position.lat},${selectedPlace.position.lng}`;
-                            window.open(url, "_blank");
-                          }}
+                        <a
+                          href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.position.lat},${selectedPlace.position.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98] text-sm"
                         >
                           <Navigation className="w-4 h-4" />
                           <span>นำทาง</span>
-                        </button>
+                        </a>
                       </div>
 
                       {/* Arrow pointer at bottom center of card */}
