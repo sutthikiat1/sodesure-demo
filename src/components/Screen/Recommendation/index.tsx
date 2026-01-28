@@ -1,4 +1,10 @@
-import { AlertCircle, Thermometer, Snowflake } from "lucide-react";
+import {
+  AlertCircle,
+  Thermometer,
+  Snowflake,
+  PiggyBank,
+  Beef,
+} from "lucide-react";
 
 interface StorageRecommendation {
   type: string;
@@ -16,7 +22,7 @@ function RecommendationScreen() {
   const recommendations: Record<string, StorageRecommendation> = {
     pork: {
       type: "หมู",
-      icon: "🐷",
+      icon: <PiggyBank />,
       iconBg: "bg-orange-100",
       items: ["หมูสันนอก", "หมูสันใน", "หมูสามชั้น", "หมูบด", "หมูหมัก (ดิบ)"],
       optimalTemp: "0–4°C (32–40°F) หรือต่ำกว่า",
@@ -28,7 +34,7 @@ function RecommendationScreen() {
     },
     beef: {
       type: "เนื้อวัว",
-      icon: "🐄",
+      icon: <Beef />,
       iconBg: "bg-red-100",
       items: ["เนื้อวัวสันนอก", "เนื้อวัวสันใน", "เนื้อวัวหมัก"],
       optimalTemp: "0–4°C (32–40°F) หรือต่ำกว่า",

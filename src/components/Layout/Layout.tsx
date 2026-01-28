@@ -17,7 +17,7 @@ const Layout = ({ children }: any) => {
 
       {/* Footer - Powered by Axons (hidden on map screen) */}
       {!isMapScreen && (
-        <div className="pb-[70px]">
+        <div className="pb-[96px]">
           <div className="flex items-center justify-center gap-1.5 py-3 bg-gray-50 border-t border-gray-100">
             <span className="text-[10px] text-gray-400 font-medium">
               Powered by
